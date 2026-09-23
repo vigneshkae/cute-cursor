@@ -4,7 +4,7 @@
 
 0.2.0 is a beta candidate. Development builds are ad-hoc signed. No public release
 should be described as notarized until both signing and notarization have passed.
-Windows installers are not available. Do not attach a placeholder EXE.
+Windows preview packages are maintained separately on `codex/windows`.
 
 ## Before a stable release
 
@@ -25,6 +25,21 @@ certificate is not a replacement for a distribution certificate.
 
 Store notarization credentials with Apple's `xcrun notarytool store-credentials`.
 Keep certificate files, passwords, and tokens out of Git.
+
+On the signing Mac, create an app-specific password in your Apple Account, then
+run this command in Terminal. Enter your developer Apple Account email and the
+app-specific password at the interactive prompts; do not put the password in the
+command, repository, or chat.
+
+```sh
+xcrun notarytool store-credentials 'cute-cursor-notary' --team-id 'YOUR_TEAM_ID'
+xcrun notarytool history --keychain-profile 'cute-cursor-notary'
+```
+
+The second command must authenticate successfully before building. A missing
+profile means the credentials were not stored under that name in the signing
+user's Keychain. Creating a password on Apple's website alone does not store it
+locally.
 
 ```sh
 export DEVELOPER_ID_APPLICATION='Developer ID Application: Your Name (TEAMID)'
