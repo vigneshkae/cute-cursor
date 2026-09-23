@@ -1,0 +1,24 @@
+name: Mac build and tests
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  mac:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test
+        run: ./scripts/test.sh
+      - name: Build universal development installer
+        run: ./scripts/build-app.sh --universal
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Cute-Cursor-macOS-development
+          path: |
+            dist/Cute-Cursor-macOS-dev.dmg
+            dist/Cute-Cursor-macOS-dev.zip
+            dist/Cute-Cursor-macOS-dev-SHA256SUMS.txt
+          if-no-files-found: error
