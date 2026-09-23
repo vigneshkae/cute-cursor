@@ -20,4 +20,5 @@ Code and original bundled artwork are MIT licensed.
   because registry calls succeeded.
 - Portable pack schema is documented in docs/PACK_FORMAT.md; validate the entire
   pack before writes. Pack settings must not mutate library items.
-- Windows is planned, not implemented. Do not add fake download links or binaries.
+- Windows is implemented separately on `codex/windows`. This branch contains the
+  Mac app. Do not describe Windows preview downloads as signed releases.

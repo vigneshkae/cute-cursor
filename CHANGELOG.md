@@ -24,4 +24,5 @@
 
 Known limits: static images only; private system APIs; macOS 27 / Apple Silicon
 registry testing so far. Public notarization and the broader visual compatibility
-matrix are pending. Windows is not yet implemented.
+matrix are pending. Windows is implemented separately on `codex/windows` and
+remains an unsigned preview requiring hardware testing.
