@@ -18,3 +18,10 @@ dist/
 *.dmg
 *.app/
 *.xcarchive/
+
+# Windows / .NET development outputs
+**/bin/
+**/obj/
+.vs/
+*.user
+*.suo

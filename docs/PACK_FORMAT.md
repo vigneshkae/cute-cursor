@@ -24,5 +24,7 @@ the complete file before writing its contents to the library.
 
 Version 1 is static. GIF animation is not embedded. Unknown format versions and
 unknown roles are rejected. macOS maps these roles to its own system registry;
-Windows must provide a separate mapping and implementation. A portable format
+Windows maps nine roles through Win32; `grab` and `grabbing` are retained for
+preview/sharing because Windows has no equivalent global cursor slots. Windows
+interprets logical size in device-independent units (40 pixels at 100% scale). A portable format
 does not make the application itself cross-platform.

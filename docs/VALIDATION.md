@@ -31,7 +31,7 @@ Not yet verified:
 - macOS 14/15/26 behavior, Intel hardware, every cursor role visually in other apps.
 - Cold-launch Finder pack opening and OS upgrade behavior.
 - Developer ID signing, notarization, stapling, and Gatekeeper on a downloaded build.
-- Windows: no implementation or executable exists yet.
+- Windows hands-on validation is pending; see [Windows checks](WINDOWS.md).
 
 This is evidence for a Mac beta, not a claim of a fully validated public release.
 

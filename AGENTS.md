@@ -1,6 +1,6 @@
 # Cute Cursor
 
-Independent native macOS app. Do not copy code or artwork from sibling Mousecape
+Independent native macOS and Windows apps. Do not copy code or artwork from sibling Mousecape
 repositories; they are not dependencies and must never be included in this repo.
 Code and original bundled artwork are MIT licensed.
 
@@ -20,4 +20,5 @@ Code and original bundled artwork are MIT licensed.
   because registry calls succeeded.
 - Portable pack schema is documented in docs/PACK_FORMAT.md; validate the entire
   pack before writes. Pack settings must not mutate library items.
-- Windows is planned, not implemented. Do not add fake download links or binaries.
+- Windows is implemented separately under `Windows/`; read `Windows/AGENTS.md`.
+- No public installer releases yet. Do not add fake download links or binaries.

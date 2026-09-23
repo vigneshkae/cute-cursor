@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../CuteCursor.Core/CuteCursor.Core.csproj"/><Content Include="../../Examples/Soft-Bloom.cutecursor" Link="Soft-Bloom.cutecursor" CopyToOutputDirectory="PreserveNewest"/><Content Include="../../Examples/Lilac-essentials.cutecursor" Link="Lilac.cutecursor" CopyToOutputDirectory="PreserveNewest"/></ItemGroup>
+</Project>

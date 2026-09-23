@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>CuteCursor</AssemblyName>
+    <RootNamespace>CuteCursor.Windows</RootNamespace>
+    <ApplicationIcon>Assets/CuteCursor.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../CuteCursor.Core/CuteCursor.Core.csproj" />
+    <EmbeddedResource Include="../../Examples/Soft-Bloom.cutecursor" LogicalName="SoftBloom.cutecursor" />
+    <Resource Include="../../Sources/CursorStudio/Resources/SoftBloom/soft-bloom-pointer.png" Link="Assets/flower.png" />
+    <Content Include="../../LICENSE" Link="LICENSE.txt" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

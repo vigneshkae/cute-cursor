@@ -3,15 +3,15 @@
 </p>
 <h1 align="center">Cute Cursor</h1>
 <p align="center">A little flower for your everyday clicks.</p>
-<p align="center">Native macOS app · Custom cursor packs · MIT licensed</p>
+<p align="center">Native Mac &amp; Windows apps · Custom cursor packs · MIT licensed</p>
 
-Cute Cursor lets you turn images into cursors and build a matching set for your Mac.
+Cute Cursor lets you turn images into cursors and build a matching set for your Mac or Windows PC.
 It comes with **Soft Bloom**, a yellow-and-sage flower pack with 11 cursor roles,
 each starting at **40 pt**.
 
 **Source preview — not a finished release.** This repository contains the app's
 source, artwork, examples, and development tools. **There are no published DMG,
-ZIP app downloads, or Windows installers yet.** You can build the Mac app locally.
+ZIP app downloads, or Windows installers yet.** You can build either app locally; Windows development is on `codex/windows`.
 Signing, notarization, and broader compatibility testing remain before a public
 installer release.
 
@@ -25,7 +25,7 @@ installer release.
   your library. Rename the pack with the pencil beside its name.
 - **Start with Soft Bloom.** Rounded yellow flowers, cream hands, and sage-green
   accents across all 11 slots. Every default slot starts at 40 pt and is editable.
-- **Apply across your Mac.** Use Apply cursor or Apply pack. Some apps draw their
+- **Apply across your desktop.** Use Apply cursor or Apply pack. Some apps draw their
   own cursors; see the compatibility notes below.
 - **Return to normal.** Restore default stays in the bottom bar and menu bar.
   Quitting also restores the original cursors; closing the window keeps the app running.
@@ -34,7 +34,9 @@ installer release.
 
 The interface uses a warm cream background, yellow buttons, sage-green text,
 compact menus, and matching confirmation dialogs. The header flower has no tile
-behind it. Native macOS file pickers retain their system appearance.
+behind it. Native file pickers retain their system appearance. The image above shows the Mac
+app; see the [Windows implementation and plan](docs/WINDOWS.md) for its features
+and platform differences.
 
 ## Cursor roles
 
@@ -81,7 +83,23 @@ and are not published by CI. Omit `--install` to build without installing.
 The internal Swift package and executable are named `CursorStudio` for continuity
 with the prototype; the app is named **Cute Cursor**.
 
-## Image and pack support
+## Build on Windows
+
+On the `codex/windows` branch, install the .NET 10 SDK and run:
+
+```powershell
+dotnet run --project Windows/CuteCursor.Tests
+dotnet run --project Windows/CuteCursor.Windows
+./scripts/build-windows.ps1 -Runtime win-x64
+# Or: ./scripts/build-windows.ps1 -Runtime win-arm64
+```
+
+The script creates a self-contained, unsigned development ZIP with `CuteCursor.exe`
+and the license. It does not upload anything. See [Windows setup, architecture,
+recovery, and testing](docs/WINDOWS.md) before trying system-wide changes.
+
+## Image and pack support (Mac)
+
 
 - PNG, JPEG, WebP, HEIC/HEIF, TIFF, BMP, ICO, GIF, and static CUR files that macOS
   ImageIO can decode. Transparent PNGs work best.
@@ -109,8 +127,10 @@ signing out and back in clears the session changes. Normal quit attempts to
 restore the originals. Editing and local previews work even when system-wide
 replacement is unavailable.
 
-**Windows is planned and has not been implemented.** The portable pack format is
-intended to be shared, but each OS needs its own app and cursor integration.
+**Windows has a native WPF implementation on `codex/windows`.** Nine system roles
+are supported; Grab and Grabbing remain editable preview roles. Windows uses
+documented Win32 APIs. Hands-on Windows compatibility testing is still pending;
+see the [Windows development guide](docs/WINDOWS.md).
 
 ## Development and checks
 
@@ -119,8 +139,10 @@ changing the system cursors. Coverage includes import validation, transparency,
 click-point geometry, persistence, portable packs, rollback, and preserving user
 edits when installing Soft Bloom.
 
-GitHub Actions runs the tests and verifies universal development packaging. It
-has no release-publishing step and uploads no installers.
+GitHub Actions runs Mac tests and universal packaging, plus Windows tests, native
+cursor creation checks, an isolated WPF UI render, and x64/ARM64 packaging. It has
+no release-publishing step and uploads no installers. A temporary Windows UI
+review image is retained in Actions.
 
 For the optional live system check, see [validation notes](docs/VALIDATION.md).
 That check briefly replaces the session's cursor roles, so run it only in an
@@ -131,22 +153,24 @@ interactive Mac session.
 | `Sources/CursorStudio` | SwiftUI interface, library, packs, and bundled artwork |
 | `Sources/CursorSystem` | Isolated macOS cursor bridge |
 | `Tests` | Swift tests |
+| `Windows` | WPF app, shared C# core, and Windows tests |
 | `Examples` | Shareable cursor packs |
 | `scripts` | Build, icon generation, and verification tools |
 | `docs` | Screenshots, pack format, validation, and release preparation |
 
 ## Privacy
 
-No accounts, analytics, or network requests. Images stay on your Mac. The library
+No accounts, analytics, or network requests. Images stay on your device. The library
 is saved at `~/Library/Application Support/CursorStudio/` to preserve earlier
-versions' data. Imported original files are never modified. Updating the default
+versions' data. On Windows, it is `%LOCALAPPDATA%\CuteCursor\library.json`. Imported original files are never modified. Updating the default
 pack preserves existing packs, renames, size changes, and intentional deletion.
 
 ## Roadmap
 
 - Finish Mac installation, upgrade, and compatibility testing.
 - Sign, notarize, and publish the first Mac beta as GitHub Release assets.
-- Build the Windows version with the same visual style and pack format.
+- Verify the Windows implementation on real x64 and ARM64 machines, then prepare
+  signed distribution.
 
 See [release preparation](docs/RELEASING.md) and the [changelog](CHANGELOG.md).
 
@@ -161,5 +185,5 @@ This is an independent implementation: no code or artwork was copied from
 Mousecape or Mousecape-swiftUI, and neither is a dependency.
 
 Contributions are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md) and
-[AGENTS.md](AGENTS.md). Please include your macOS version and hardware when reporting
+[AGENTS.md](AGENTS.md). Please include your OS version and hardware when reporting
 cursor behavior problems.

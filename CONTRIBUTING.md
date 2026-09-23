@@ -13,5 +13,7 @@ are absent, and verify that every changed cursor can be restored. Do not enable
 system-changing integration tests on unattended CI. Include macOS version and
 hardware in reports of cursor application problems.
 
-Windows is a planned separate implementation. Keep portable role names and the
-pack schema stable; propose a new format version before making incompatible changes.
+The Windows implementation is in `Windows/`; read its `AGENTS.md` and
+`docs/WINDOWS.md`. Use .NET 10, run the portable tests, and build WPF on Windows.
+Never change live system cursors in CI. Keep portable role names and the pack
+schema stable; propose a new format version before making incompatible changes.

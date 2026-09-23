@@ -1,5 +1,18 @@
 # Changes
 
+## Unreleased — Windows source preview (`codex/windows`)
+
+- Add a native .NET 10 / WPF Windows app with the Soft Bloom theme and all 11
+  shared pack slots at an initial size of 40.
+- Add image import, library search/favorites, pack editing/renaming, click-point
+  preview, shared pack import/export, and themed editor menus and confirmations.
+- Support nine Win32 system cursor roles with preflight, rollback, original
+  restoration, tray lifecycle and recovery after an interrupted session.
+- Preserve Grab/Grabbing for preview and cross-platform sharing.
+- Add portable transaction/persistence tests, native Windows creation checks,
+  isolated UI review, and unsigned self-contained x64/ARM64 development packaging.
+- Do not publish installers. Hands-on Windows validation and signing are pending.
+
 ## 0.2.0 — Mac beta candidate
 
 - Add Soft Bloom as the default pack, with 11 botanical cursors at 40 pt.
