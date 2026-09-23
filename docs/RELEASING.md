@@ -4,7 +4,9 @@
 
 0.2.0 is a beta candidate. Development builds are ad-hoc signed. No public release
 should be described as notarized until both signing and notarization have passed.
-Windows installers are not available. Do not attach a placeholder EXE.
+Windows portable test ZIPs are built separately with `scripts/build-windows.ps1`.
+Private development downloads are described in `docs/TESTING_DOWNLOADS.md`; do
+not describe them as signed or notarized public releases.
 
 ## Before a stable release
 
@@ -51,8 +53,9 @@ Upload installers as **Release assets**, never as source files committed to Git.
 Create a draft release, attach the signed files, review notes and checksums, then
 publish the release. For beta testing, mark it as a prerelease.
 
-The CI workflow runs tests and verifies development packaging. It does not upload
-installers, publish releases, use signing credentials, or claim notarization.
+The CI workflows run tests and verify development packaging. Normal runs do not
+upload installers. Explicit `private-test-` tags retain Windows packages for manual
+release preparation. CI does not publish releases or use signing credentials.
 
 Once a stable release exists, these patterns provide download buttons without
 hosting a website (replace OWNER and REPO with the published repository):

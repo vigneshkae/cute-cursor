@@ -56,3 +56,13 @@ jobs:
           name: windows-ui-preview
           path: ${{ runner.temp }}/windows-soft-bloom.png
           retention-days: 7
+      - name: Save private test packages for release preparation
+        if: startsWith(github.ref, 'refs/tags/private-test-')
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-private-test-packages
+          path: |
+            dist/CuteCursor-windows-preview-*.zip
+            dist/CuteCursor-windows-preview-*.zip.sha256
+          if-no-files-found: error
+          retention-days: 7

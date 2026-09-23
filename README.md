@@ -9,11 +9,12 @@ Cute Cursor lets you turn images into cursors and build a matching set for your 
 It comes with **Soft Bloom**, a yellow-and-sage flower pack with 11 cursor roles,
 each starting at **40 pt**.
 
-**Source preview — not a finished release.** This repository contains the app's
-source, artwork, examples, and development tools. **There are no published DMG,
-ZIP app downloads, or Windows installers yet.** You can build either app locally; Windows development is on `codex/windows`.
-Signing, notarization, and broader compatibility testing remain before a public
-installer release.
+**Private testing — not a finished release.** Mac and Windows development downloads
+are available to authorized repository members on the
+[private test release](https://github.com/vigneshkae/cute-cursor/releases/tag/private-test-2026-09-23.1).
+The Mac build is ad-hoc signed and unnotarized; Windows builds are unsigned.
+These are for hands-on testing. Signing and broader compatibility checks remain
+before a public release. See [test installation instructions](docs/TESTING_DOWNLOADS.md).
 
 ![Cute Cursor showing the Soft Bloom pack and botanical interface](docs/images/soft-bloom.png)
 
@@ -145,8 +146,9 @@ edits when installing Soft Bloom.
 
 GitHub Actions runs Mac tests and universal packaging, plus Windows tests, native
 cursor creation checks, an isolated WPF UI render, and x64/ARM64 packaging. It has
-no release-publishing step and uploads no installers. A temporary Windows UI
-review image is retained in Actions.
+no automatic release-publishing step. Normal runs retain a temporary Windows UI
+review image. Tags prefixed `private-test-` also retain Windows test packages for
+manual upload to a private GitHub prerelease.
 
 For the optional live system check, see [validation notes](docs/VALIDATION.md).
 That check briefly replaces the session's cursor roles, so run it only in an

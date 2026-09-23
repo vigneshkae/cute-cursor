@@ -30,7 +30,8 @@ require hands-on Windows testing; a successful build is not that verification.
    ZIP packaging. CI does not apply system cursors or publish installers.
 5. **Hands-on verification — pending.** Run the matrix below on Windows before
    treating this as a beta suitable for other people's machines.
-6. **Public distribution — deferred.** Authenticode signing, an installer if
+6. **Private test downloads — available.** See [installation instructions](TESTING_DOWNLOADS.md).
+7. **Public distribution — deferred.** Authenticode signing, an installer if
    desired, downloaded-file checks, and GitHub Release assets come later.
 
 ## Build and run
@@ -55,8 +56,8 @@ To create local portable development packages:
 Extract the ZIP and open `CuteCursor.exe`. The runtime is bundled, so the packaged
 app does not require a separate .NET installation. WPF native libraries may be
 extracted by .NET at launch. These EXEs are unsigned development builds and may
-trigger Windows reputation warnings. Neither packages nor final builds are
-uploaded by the workflow. Only a temporary UI review image is uploaded to Actions.
+trigger Windows reputation warnings. Normal CI runs upload only a temporary UI review image. Explicit `private-test-`
+tags also retain development ZIPs for manual private prerelease uploads.
 
 The portable core tests also run on macOS with the .NET 10 SDK. The WPF project
 can be cross-compiled there, but running it requires Windows.
