@@ -116,6 +116,51 @@ final class PackTests: XCTestCase {
         XCTAssertFalse(store.items.contains { $0.id == item.id })
     }
 
+    @MainActor
+    func testSoftBloomDefaultHasAllRolesAt40WithTransparentArtwork() throws {
+        let store = CursorStore(directory: try temporaryDirectory())
+        let pack = try XCTUnwrap(store.selectedPack)
+        XCTAssertEqual(pack.name, "Soft Bloom")
+        XCTAssertEqual(pack.id, SoftBloomArtwork.packID)
+        let portable = try PortablePack.decode(store.portablePack(pack))
+        XCTAssertEqual(Set(portable.cursors.map(\.role)), Set(CursorRole.allCases))
+        for slot in portable.cursors {
+            XCTAssertEqual(slot.size, 40)
+            let bitmap = try XCTUnwrap(NSBitmapImageRep(data: slot.png))
+            XCTAssertEqual(bitmap.colorAt(x: 0, y: 0)?.alphaComponent, 0)
+            let x = min(bitmap.pixelsWide - 1, Int(slot.hotspotX * Double(bitmap.pixelsWide)))
+            let y = min(bitmap.pixelsHigh - 1, Int(slot.hotspotY * Double(bitmap.pixelsHigh)))
+            XCTAssertGreaterThan(bitmap.colorAt(x: x, y: y)?.alphaComponent ?? 0, 0.5, "Click point must land on \(slot.role) artwork")
+        }
+    }
+
+    @MainActor
+    func testSoftBloomMigrationPreservesExistingPacksAndUserChanges() throws {
+        let root = try temporaryDirectory()
+        let original = CursorStore(directory: root)
+        original.createPack(); original.renamePack("My existing flowers")
+        original.assign(original.items[0], to: .pointer)
+        original.update { $0.size = 51 }
+        let existing = try XCTUnwrap(original.selectedPack)
+        // Model a library from before the bundled-pack receipt existed.
+        try JSONEncoder().encode([existing]).write(to: root.appendingPathComponent("packs.json"))
+        try FileManager.default.removeItem(at: root.appendingPathComponent("bundled-packs.json"))
+        let upgraded = CursorStore(directory: root)
+        XCTAssertNil(upgraded.error)
+        XCTAssertEqual(upgraded.packs.count, 2)
+        XCTAssertEqual(upgraded.packs.last, existing)
+        upgraded.packMode = true
+        upgraded.renamePack("My Soft Bloom")
+        upgraded.update { $0.size = 46 }
+        let renamed = try XCTUnwrap(upgraded.selectedPack)
+        let reloaded = CursorStore(directory: root)
+        XCTAssertEqual(reloaded.selectedPack, renamed)
+        XCTAssertEqual(reloaded.packs.count, 2)
+        reloaded.deletePack()
+        let afterDeletion = CursorStore(directory: root)
+        XCTAssertEqual(afterDeletion.packs, [existing], "Do not reinstall a deliberately deleted default pack")
+    }
+
     func testInvalidSystemPackRejectedBeforeTouchingRegistry() {
         XCTAssertEqual(CSApplyCursors(nil, 0), -2)
         var definition = CSCursorDefinition(role: 99, image: nil, width: 32, height: 32, x: 1, y: 1)

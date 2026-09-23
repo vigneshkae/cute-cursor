@@ -51,7 +51,7 @@ final class CursorStore: ObservableObject {
             }
             try loadPacks()
             selectedID = items.first?.id
-            selectedPackID = packs.first?.id
+            selectedPackID = packs.first(where: { $0.id == SoftBloomArtwork.packID })?.id ?? packs.first?.id
         } catch {
             canWrite = false
             self.error = "Your library couldn’t be opened. Existing files have been kept safe. \(error.localizedDescription)"

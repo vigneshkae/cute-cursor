@@ -1,113 +1,165 @@
-# Cute Cursor
+<p align="center">
+  <img src="Sources/CursorStudio/Resources/SoftBloom/soft-bloom-pointer.png" width="80" alt="Soft Bloom flower">
+</p>
+<h1 align="center">Cute Cursor</h1>
+<p align="center">A little flower for your everyday clicks.</p>
+<p align="center">Native macOS app · Custom cursor packs · MIT licensed</p>
 
-A small native Mac app for making your everyday cursors a little more you.
-Import your own images, choose the click point, and build a matching cursor pack.
+Cute Cursor lets you turn images into cursors and build a matching set for your Mac.
+It comes with **Soft Bloom**, a yellow-and-sage flower pack with 11 cursor roles,
+each starting at **40 pt**.
 
-**Status: Mac beta, 0.2.0.** macOS 14+ is the build target. System replacement has
-been tested on macOS 27 on Apple Silicon; other macOS versions and Intel Macs
-still need hands-on testing. Windows is planned, not available yet.
+**Source preview — not a finished release.** This repository contains the app's
+source, artwork, examples, and development tools. **There are no published DMG,
+ZIP app downloads, or Windows installers yet.** You can build the Mac app locally.
+Signing, notarization, and broader compatibility testing remain before a public
+installer release.
 
-## Download
+![Cute Cursor showing the Soft Bloom pack and botanical interface](docs/images/soft-bloom.png)
 
-Open this repository's **Releases** section for published installers. Public Mac
-releases use `Cute-Cursor-macOS.dmg` (or `.zip`). Open the DMG and drag **Cute Cursor**
-to Applications. You do not need Git, Xcode, or the source code to install it.
+## What you can do
 
-Files ending in `-dev` are local development builds. They are ad-hoc signed and
-not notarized; they are not the public release. A stable public release is still
-pending Developer ID signing, notarization, and the compatibility checks below.
+- **Create your own cursor.** Import an image, adjust its size and click point,
+  and try it in the preview area.
+- **Build a complete pack.** Set an image for each cursor role, or choose one from
+  your library. Rename the pack with the pencil beside its name.
+- **Start with Soft Bloom.** Rounded yellow flowers, cream hands, and sage-green
+  accents across all 11 slots. Every default slot starts at 40 pt and is editable.
+- **Apply across your Mac.** Use Apply cursor or Apply pack. Some apps draw their
+  own cursors; see the compatibility notes below.
+- **Return to normal.** Restore default stays in the bottom bar and menu bar.
+  Quitting also restores the original cursors; closing the window keeps the app running.
+- **Share your work.** Export one `.cutecursor` file with its images, sizes, and
+  click points. Import through the app or drag and drop.
 
-GitHub hosts release downloads. No website, Railway server, login, or subscription
-is needed to use the app. See [release preparation](docs/RELEASING.md).
+The interface uses a warm cream background, yellow buttons, sage-green text,
+compact menus, and matching confirmation dialogs. The header flower has no tile
+behind it. Native macOS file pickers retain their system appearance.
 
-## Make it yours
+## Cursor roles
 
-- **Single cursor:** drop a PNG or choose Add cursor, adjust its size and click
-  point, try the preview, and choose Apply pointer.
-- **Full pack:** open Cursor packs, try the original Lilac essentials set, or
-  create a pack. Choose an image for each slot or use an image from your library.
-- **11 slots:** pointer, link, text, grab, grabbing, horizontal resize, vertical
-  resize, both diagonal resizes, crosshair, and not allowed.
-- Pack settings are independent of your library. Empty slots use the cursor
-  definitions that were active before Cute Cursor first applied a change.
-- Export a `.cutecursor` pack to share all its images, sizes, and click points.
-  Import it by dragging it into the app, using Import, or double-clicking it. A shareable original pack is included in `Examples/`.
-- Restore default returns the original cursors. Quitting also restores them;
-  closing the window keeps the app running in the menu bar.
+| Role | Used for |
+| --- | --- |
+| Pointer | Everyday pointing and clicking |
+| Link | Links and other clickable items |
+| Text | Text selection and insertion |
+| Grab | Items you can drag |
+| Grabbing | An active drag |
+| Horizontal resize | Left/right resizing |
+| Vertical resize | Up/down resizing |
+| Diagonal resize ↖↘ | Top-left / bottom-right resizing |
+| Diagonal resize ↗↙ | Top-right / bottom-left resizing |
+| Crosshair | Precise selection |
+| Not allowed | An unavailable action |
 
-## Images and packs
+Pack settings are independent of the single-cursor library. Empty slots use the
+cursor definitions captured before Cute Cursor first applied a change.
 
-PNG, JPEG, WebP, HEIC/HEIF, TIFF, BMP, ICO, GIF, and static CUR files that macOS
-ImageIO can decode are accepted. Transparent PNGs are recommended. Animated and
-multi-image files use **only the first frame**. ANI, SVG, and Mousecape `.cape`
-files are not supported. Each image must be under 16 MB, at most 16,384 pixels per
-side, and is downsampled to a maximum of 256 pixels. Display size is 16–64 points.
+Try the shareable [Soft Bloom pack](Examples/Soft-Bloom.cutecursor).
+The earlier [Lilac essentials example](Examples/Lilac-essentials.cutecursor) is
+also included. These are **pack data files**, not application installers.
 
-Pack files are portable JSON with embedded PNGs, a maximum of 11 unique slots,
-and a 16 MB file limit. See [the format specification](docs/PACK_FORMAT.md).
-The Windows version can use these role names and images when implemented.
+## Build on your Mac
 
-## Compatibility
-
-System replacement uses optional, undocumented macOS functions, isolated in
-`Sources/CursorSystem`. OS updates can change this behavior. Some apps and websites
-draw their own cursors, which these replacements do not affect. Changed macOS
-Accessibility pointer colors can prevent replacement; reset the pointer colors
-and try again. A role missing from the current system is reported before applying.
-Diagonal resize slots may be unavailable on older macOS versions.
-
-The editor and local preview remain usable when system replacement is unavailable.
-A successful API call is not proof that every app displays the new cursor. This
-implementation is intended for direct distribution, not the Mac App Store.
-
-If the app crashes while a custom cursor is active, signing out and back in clears
-session cursor changes. Restoring is always attempted on a normal quit.
-
-## Build and test
-
-Install Xcode, select its developer tools, then run:
+Requirements: macOS, Xcode with Swift 5.9 or newer and the macOS 15 SDK or newer,
+and Xcode's command-line tools selected. The app's deployment target is macOS 14.
+No API keys, environment secrets, or third-party packages are needed.
 
 ```sh
+git clone https://github.com/vigneshkae/cute-cursor.git
+cd cute-cursor
 ./scripts/test.sh
 ./scripts/build-app.sh --universal --install
 open "$HOME/Applications/Cute Cursor.app"
 ```
 
-The internal Swift package/executable is still named `CursorStudio`; the user-facing
-app is **Cute Cursor**. The build script stages signing outside cloud-synced folders
-and outputs development DMG/ZIP files and SHA-256 checksums under `dist/`.
+The build script creates a universal Apple Silicon/Intel **development build**,
+installs it under `~/Applications`, and writes a local DMG, ZIP, and checksums to
+`dist/`. These files are ad-hoc signed and not notarized. They are ignored by Git
+and are not published by CI. Omit `--install` to build without installing.
 
-Automated tests cover import, transparency, geometry, persistence, corrupt data,
-pack validation, round trips, independent edits, and missing files. Deterministic C tests also simulate registration and recovery failures without changing system cursors. For the opt-in
-live system test, which briefly changes all supported roles and restores them:
+The internal Swift package and executable are named `CursorStudio` for continuity
+with the prototype; the app is named **Cute Cursor**.
 
-```sh
-clang scripts/test-system-pack.m Sources/CursorSystem/CursorSystem.c \
-  -I Sources/CursorSystem/include -framework Cocoa -framework ApplicationServices \
-  -o /tmp/cute-cursor-system-pack
-/tmp/cute-cursor-system-pack
-```
+## Image and pack support
 
-Run this only in an interactive Mac session, not CI. It verifies full/partial pack
-switching, registered sizes and click points, and restoration of the original
-bitmap data. The user also confirmed the link hand and text cursor outside the app on macOS 27. Visual checks for every other role and OS version remain necessary before a stable release.
+- PNG, JPEG, WebP, HEIC/HEIF, TIFF, BMP, ICO, GIF, and static CUR files that macOS
+  ImageIO can decode. Transparent PNGs work best.
+- Animated and multi-image files use only their **first frame**. ANI, SVG, and
+  Mousecape `.cape` files are not supported.
+- Images: up to 16 MB and 16,384 pixels per side; imported images are downsampled
+  to at most 256 pixels. Cursor display size: 16–64 logical points.
+- Packs: portable JSON with embedded PNGs, up to 11 unique roles and a 16 MB limit.
+  See the [pack format specification](docs/PACK_FORMAT.md).
+
+## Compatibility and current limits
+
+System-wide replacement uses undocumented macOS functions isolated in
+`Sources/CursorSystem`. It is experimental and intended for direct distribution,
+not the Mac App Store. macOS updates may change or remove this behavior.
+
+The app has been tested locally on **macOS 27 / Apple Silicon**. macOS 14, 15, 26,
+and Intel runtime compatibility still need hands-on verification; compiling an
+Intel slice is not a runtime test. Diagonal resize roles may be unavailable on
+older macOS versions. Some apps and websites use their own cursor rendering.
+
+If custom pointer colors in macOS Accessibility settings prevent replacement,
+reset those colors and try again. If the app crashes with custom cursors active,
+signing out and back in clears the session changes. Normal quit attempts to
+restore the originals. Editing and local previews work even when system-wide
+replacement is unavailable.
+
+**Windows is planned and has not been implemented.** The portable pack format is
+intended to be shared, but each OS needs its own app and cursor integration.
+
+## Development and checks
+
+`./scripts/test.sh` runs Swift tests and deterministic C transaction tests without
+changing the system cursors. Coverage includes import validation, transparency,
+click-point geometry, persistence, portable packs, rollback, and preserving user
+edits when installing Soft Bloom.
+
+GitHub Actions runs the tests and verifies universal development packaging. It
+has no release-publishing step and uploads no installers.
+
+For the optional live system check, see [validation notes](docs/VALIDATION.md).
+That check briefly replaces the session's cursor roles, so run it only in an
+interactive Mac session.
+
+| Directory | Contents |
+| --- | --- |
+| `Sources/CursorStudio` | SwiftUI interface, library, packs, and bundled artwork |
+| `Sources/CursorSystem` | Isolated macOS cursor bridge |
+| `Tests` | Swift tests |
+| `Examples` | Shareable cursor packs |
+| `scripts` | Build, icon generation, and verification tools |
+| `docs` | Screenshots, pack format, validation, and release preparation |
 
 ## Privacy
 
-The app has no accounts, analytics, or network requests. Images stay on your Mac.
-The saved library remains at `~/Library/Application Support/CursorStudio/` to
-preserve data from the original prototype. Existing library files are not reset
-when the app is renamed. Imported originals are never modified. Referenced images
-are retained when removing a pack to avoid deleting images used elsewhere.
+No accounts, analytics, or network requests. Images stay on your Mac. The library
+is saved at `~/Library/Application Support/CursorStudio/` to preserve earlier
+versions' data. Imported original files are never modified. Updating the default
+pack preserves existing packs, renames, size changes, and intentional deletion.
 
-## Source and license
+## Roadmap
 
-Code and original bundled artwork are available under the [MIT License](LICENSE).
-You may inspect, modify, redistribute, and sell modified versions while preserving
-the license notice. Rights to images you import remain with their respective owners.
+- Finish Mac installation, upgrade, and compatibility testing.
+- Sign, notarize, and publish the first Mac beta as GitHub Release assets.
+- Build the Windows version with the same visual style and pack format.
 
-This project contains no copied code or artwork from Mousecape or Mousecape-swiftUI.
-Only this directory belongs in the Cute Cursor repository; sibling projects are
-not dependencies and must not be included when publishing.
+See [release preparation](docs/RELEASING.md) and the [changelog](CHANGELOG.md).
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) to contribute.
+## License and contributions
+
+Code and included artwork are distributed under the [MIT License](LICENSE).
+You can inspect, modify, redistribute, and sell modified versions while preserving
+the license notice. Imported third-party images remain subject to their owners'
+rights. See [artwork provenance](docs/ARTWORK.md) for the included assets.
+
+This is an independent implementation: no code or artwork was copied from
+Mousecape or Mousecape-swiftUI, and neither is a dependency.
+
+Contributions are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md) and
+[AGENTS.md](AGENTS.md). Please include your macOS version and hardware when reporting
+cursor behavior problems.

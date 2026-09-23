@@ -32,6 +32,7 @@ if $universal; then
 fi
 cp Resources/Info.plist "$app_path/Contents/Info.plist"
 cp LICENSE "$app_path/Contents/Resources/LICENSE.txt"
+ditto --norsrc Sources/CursorStudio/Resources/SoftBloom "$app_path/Contents/Resources/SoftBloom"
 swift scripts/make-icon.swift "$staging_dir/AppIcon.iconset"
 iconutil --convert icns "$staging_dir/AppIcon.iconset" --output "$app_path/Contents/Resources/AppIcon.icns"
 xattr -cr "$app_path"

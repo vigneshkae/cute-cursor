@@ -3,22 +3,26 @@ import SwiftUI
 struct PackEditor: View {
     @EnvironmentObject var store: CursorStore
     @State private var showDelete = false
+    @State private var showRename = false
+    @State private var draftName = ""
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             if let pack = store.selectedPack {
                 HStack {
-                    TextField("Pack name", text: Binding(get: { pack.name }, set: store.renamePack))
-                        .font(.system(size: 22, weight: .semibold, design: .rounded)).textFieldStyle(.plain)
-                        .accessibilityLabel("Pack name")
-                    Menu {
-                        Button("Export Pack…", action: store.exportPack).disabled(pack.cursors.isEmpty)
-                        Button("Remove Pack…", role: .destructive) { showDelete = true }
-                    } label: { Image(systemName: "ellipsis") }.menuStyle(.borderlessButton).fixedSize()
+                    Text(pack.name).font(.system(size: 22, weight: .semibold, design: .rounded)).lineLimit(2)
+                    Button { draftName = pack.name; showRename = true } label: { Image(systemName: "pencil") }
+                        .buttonStyle(SecondaryButtonStyle()).accessibilityLabel("Rename pack").help("Rename this pack")
+                    Spacer(minLength: 8)
+                    Button(action: store.exportPack) { Label("Export", systemImage: "square.and.arrow.up") }
+                        .buttonStyle(SecondaryButtonStyle()).disabled(pack.cursors.isEmpty)
+                    ThemedMenu(accessibilityName: "Pack actions", items: [
+                        ThemedMenuItem(title: "Rename pack…", symbol: "pencil") { draftName = pack.name; showRename = true },
+                        ThemedMenuItem(title: "Remove pack…", symbol: "trash", destructive: true) { showDelete = true }
+                    ])
                 }
                 Text("\(pack.cursors.count) of 11 slots · Empty slots use your original cursors.")
                     .font(.system(size: 11)).foregroundStyle(StudioStyle.muted)
-                ScrollView(.horizontal) {
-                    HStack(spacing: 8) {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 90), spacing: 8)], spacing: 8) {
                         ForEach(CursorRole.allCases) { role in
                             Button { store.selectedRole = role } label: {
                                 VStack(spacing: 6) {
@@ -28,22 +32,20 @@ struct PackEditor: View {
                                         } else { Image(systemName: role.symbol).foregroundStyle(StudioStyle.muted) }
                                     }.frame(width: 25, height: 25)
                                     Text(role.title).font(.system(size: 9)).lineLimit(1)
-                                }.frame(width: 66).padding(.vertical, 9)
+                                }.frame(maxWidth: .infinity).padding(.vertical, 9)
                                     .background(store.selectedRole == role ? StudioStyle.accent.opacity(0.12) : .white, in: RoundedRectangle(cornerRadius: 10))
                                     .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(store.selectedRole == role ? StudioStyle.accent : StudioStyle.line))
                             }.buttonStyle(.plain).accessibilityLabel("\(role.title), \(pack[role] == nil ? "original" : "custom")")
                         }
-                    }.padding(2)
-                }.scrollIndicators(.visible)
+                }.padding(2)
                 HStack {
                     Text(store.selectedRole.title).font(.system(size: 13, weight: .semibold))
                     Spacer()
-                    Menu("Use from library") {
-                        ForEach(store.items) { item in
-                            Button(item.name) { store.assign(item, to: store.selectedRole) }
-                        }
-                    }.fixedSize()
-                    Button("Choose image…") { store.importSlot(store.selectedRole) }
+                    ThemedMenu(title: "From library", symbol: "chevron.down", items: store.items.map { item in
+                        ThemedMenuItem(title: item.name, image: store.image(for: item)) { store.assign(item, to: store.selectedRole) }
+                    })
+                    Button { store.importSlot(store.selectedRole) } label: { Label("Choose image", systemImage: "photo") }
+                        .buttonStyle(SecondaryButtonStyle())
                 }
                 ScrollView {
                     if let item = store.selected, let image = store.image(for: item) {
@@ -57,15 +59,6 @@ struct PackEditor: View {
                         }.frame(maxWidth: .infinity).padding(.vertical, 65)
                     }
                 }
-                HStack {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(store.hasUnappliedPackChanges ? "Changes ready to apply" : "One pack. A little personality everywhere.").font(.system(size: 11, weight: .medium))
-                        Text("System replacement is experimental.").font(.system(size: 10)).foregroundStyle(StudioStyle.muted)
-                    }
-                    Spacer()
-                    Button(store.activePackID == pack.id && !store.hasUnappliedPackChanges ? "Applied ✓" : "Apply pack", action: store.applyPack)
-                        .buttonStyle(PrimaryButtonStyle()).disabled(pack.cursors.isEmpty || !store.systemAvailable)
-                }
             } else {
                 VStack(spacing: 16) {
                     Image(systemName: "square.stack.3d.up").font(.system(size: 40)).foregroundStyle(StudioStyle.accent)
@@ -74,8 +67,35 @@ struct PackEditor: View {
                 }.frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-        .confirmationDialog("Remove this pack?", isPresented: $showDelete, titleVisibility: .visible) {
-            Button("Remove Pack", role: .destructive, action: store.deletePack)
-        } message: { Text("Your original imported files stay untouched.") }
+        .sheet(isPresented: $showRename) {
+            VStack(alignment: .leading, spacing: 20) {
+                Text("Rename pack").font(.system(size: 22, weight: .semibold, design: .rounded))
+                TextField("Pack name", text: $draftName).textFieldStyle(.plain)
+                    .padding(12).background(.white, in: RoundedRectangle(cornerRadius: 10))
+                    .accessibilityLabel("Pack name").onSubmit { saveName() }
+                HStack {
+                    Spacer()
+                    Button("Cancel") { showRename = false }.buttonStyle(SecondaryButtonStyle()).keyboardShortcut(.cancelAction)
+                    Button("Save name", action: saveName).buttonStyle(PrimaryButtonStyle())
+                        .disabled(draftName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                        .keyboardShortcut(.defaultAction)
+                }
+            }.padding(28).frame(width: 390).background(StudioStyle.background)
+                .foregroundStyle(StudioStyle.ink).tint(StudioStyle.accent)
+        }
+        .sheet(isPresented: $showDelete) {
+            ThemedConfirmation(
+                title: "Remove pack?", itemName: store.selectedPack?.name,
+                message: "This removes the pack and its settings. Your original imported files stay untouched.",
+                confirmTitle: "Remove pack",
+                cancel: { showDelete = false },
+                confirm: { showDelete = false; store.deletePack() }
+            )
+        }
     }
+    private func saveName() {
+        guard !draftName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+        store.renamePack(draftName); showRename = false
+    }
+
 }

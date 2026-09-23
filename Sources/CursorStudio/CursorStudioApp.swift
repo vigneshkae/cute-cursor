@@ -5,13 +5,14 @@ import AppKit
 struct CursorStudioApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject private var store = CursorStore()
+    @State private var openedLibrary = false
 
     var body: some Scene {
         Window("Cute Cursor", id: "studio") {
             StudioView().environmentObject(store)
-                .onAppear { delegate.store = store; NSApp.setActivationPolicy(.regular); NSApp.activate(ignoringOtherApps: true) }
+                .onAppear { if !openedLibrary { store.packMode = true; openedLibrary = true }; delegate.store = store; NSApp.setActivationPolicy(.regular); NSApp.activate(ignoringOtherApps: true) }
         }
-        .defaultSize(width: 1140, height: 820)
+        .defaultSize(width: 1060, height: 820)
         .windowStyle(.hiddenTitleBar)
         .commands {
             CommandGroup(replacing: .newItem) {

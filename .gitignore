@@ -9,3 +9,12 @@ dist/
 *.p8
 *.cer
 *.mobileprovision
+
+# Local signing and distribution files
+*.pfx
+*.key
+*.pem
+*.certSigningRequest
+*.dmg
+*.app/
+*.xcarchive/

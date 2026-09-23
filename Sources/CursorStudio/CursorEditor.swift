@@ -19,20 +19,20 @@ struct CursorEditor: View {
                     .accessibilityLabel("Cursor name")
                 if !inPack { Button { store.update { $0.isFavorite.toggle() } } label: { Image(systemName: item.isFavorite ? "heart.fill" : "heart").font(.system(size: 16)).foregroundStyle(StudioStyle.accent) }
                     .buttonStyle(.plain).help(item.isFavorite ? "Remove from favorites" : "Add to favorites") }
-                Menu {
-                    Button("Export PNG…", action: store.exportSelected)
-                    Button(inPack ? "Use Original for This Slot…" : "Remove Cursor…", role: .destructive) { showDelete = true }
-                } label: { Image(systemName: "ellipsis").font(.system(size: 16)) }.menuStyle(.borderlessButton).fixedSize().help("Cursor actions")
+                ThemedMenu(accessibilityName: "Cursor actions", items: [
+                    ThemedMenuItem(title: "Export PNG…", symbol: "square.and.arrow.up", action: store.exportSelected),
+                    ThemedMenuItem(title: inPack ? "Use original for this slot…" : "Remove cursor…", symbol: "trash", destructive: true) { showDelete = true }
+                ])
             }
             VStack(spacing: 0) {
                 HStack {
-                    Text("THE LITTLE DETAILS").font(.system(size: 9, weight: .semibold)).tracking(1.7).foregroundStyle(StudioStyle.muted)
+                    Text("Preview").font(.system(size: 12, weight: .medium)).foregroundStyle(StudioStyle.muted)
                     Spacer()
                     Button { previewDark.toggle() } label: { Image(systemName: previewDark ? "sun.max" : "moon").font(.system(size: 12)) }
                         .buttonStyle(.plain).foregroundStyle(StudioStyle.muted).help("Switch preview background")
                 }.padding(18)
                 GeometryReader { geometry in
-                    let longest: CGFloat = 154
+                    let longest: CGFloat = inPack ? 108 : 154
                     let ratio = image.size.width / image.size.height
                     let width = ratio >= 1 ? longest : longest * ratio
                     let height = ratio >= 1 ? longest / ratio : longest
@@ -56,7 +56,7 @@ struct CursorEditor: View {
                         })
                         .accessibilityLabel("Click point preview")
                         .accessibilityHint("Click or drag to position the click point. Keyboard users can use the horizontal and vertical click point sliders below.")
-                }.frame(height: 196)
+                }.frame(height: inPack ? 130 : 196)
                 HStack(spacing: 5) {
                     Image(systemName: "hand.tap")
                     Text("Click the image to set its click point")
@@ -88,32 +88,23 @@ struct CursorEditor: View {
             }.padding(.horizontal, 3)
 
             VStack(alignment: .leading, spacing: 8) {
-                Text("TAKE IT FOR A SPIN").font(.system(size: 9, weight: .semibold)).tracking(1.6).foregroundStyle(StudioStyle.muted)
+                Text("Try your cursor").font(.system(size: 12, weight: .medium)).foregroundStyle(StudioStyle.muted)
                 CursorPlayground(cursor: item.cursor(for: image))
                     .frame(height: 88).clipShape(RoundedRectangle(cornerRadius: 12))
                     .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(StudioStyle.line))
             }
-            if !inPack {
-            Spacer(minLength: 0)
-            HStack(spacing: 12) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(store.hasUnappliedChanges ? "Changes ready to apply" : "Make it your main pointer").font(.system(size: 11, weight: .medium))
-                    Text(store.systemAvailable ? "Experimental · some apps may override it" : "System apply unavailable on this Mac")
-                        .font(.system(size: 9)).foregroundStyle(StudioStyle.muted)
-                }
-                Spacer(minLength: 0)
-                Button(action: store.apply) {
-                    HStack(spacing: 7) {
-                        Text(store.activeID == item.id && !store.hasUnappliedChanges ? "Applied" : "Apply pointer")
-                        Image(systemName: store.activeID == item.id && !store.hasUnappliedChanges ? "checkmark" : "arrow.up.right")
-                    }.font(.system(size: 12, weight: .semibold))
-                }.buttonStyle(PrimaryButtonStyle()).disabled(!store.systemAvailable)
-            }
-            }
         }.onAppear { name = item.name }
-            .confirmationDialog(inPack ? "Use the original cursor for this slot?" : "Remove “\(item.name)” from your library?", isPresented: $showDelete, titleVisibility: .visible) {
-                Button(inPack ? "Use Original" : "Remove Cursor", role: .destructive, action: store.deleteSelected)
-            } message: { Text("Your original image file will stay untouched.") }
+            .sheet(isPresented: $showDelete) {
+                ThemedConfirmation(
+                    title: inPack ? "Use the original cursor?" : "Remove cursor?",
+                    itemName: item.name,
+                    message: inPack ? "This slot will use the original Mac cursor. Your other slots stay as they are." : "This removes the cursor from your library. Your original image file stays untouched.",
+                    confirmTitle: inPack ? "Use original" : "Remove cursor",
+                    symbol: inPack ? "arrow.counterclockwise" : "trash",
+                    cancel: { showDelete = false },
+                    confirm: { showDelete = false; store.deleteSelected() }
+                )
+            }
     }
 
     private func rename() {
@@ -168,13 +159,13 @@ final class PlaygroundView: NSView {
     override func resetCursorRects() { addCursorRect(bounds, cursor: previewCursor) }
     override func mouseDown(with event: NSEvent) { clicks += 1; clickPoint = convert(event.locationInWindow, from: nil); needsDisplay = true }
     override func draw(_ dirtyRect: NSRect) {
-        NSColor(calibratedRed: 0.935, green: 0.925, blue: 0.975, alpha: 1).setFill(); bounds.fill()
+        NSColor(calibratedRed: 0.96, green: 0.95, blue: 0.85, alpha: 1).setFill(); bounds.fill()
         if let point = clickPoint {
-            NSColor(calibratedRed: 0.43, green: 0.32, blue: 0.78, alpha: 0.18).setFill()
+            SoftBloomArtwork.sage.withAlphaComponent(0.25).setFill()
             NSBezierPath(ovalIn: NSRect(x: point.x - 14, y: point.y - 14, width: 28, height: 28)).fill()
         }
-        let text = clicks == 0 ? "Move your pointer here. Give it a click." : "Nice click. \(clicks) little moment\(clicks == 1 ? "" : "s") of joy."
-        let attrs: [NSAttributedString.Key: Any] = [.font: NSFont.systemFont(ofSize: 11), .foregroundColor: NSColor(calibratedRed: 0.43, green: 0.37, blue: 0.57, alpha: 1)]
+        let text = clicks == 0 ? "Move here and click to test" : "\(clicks) click\(clicks == 1 ? "" : "s") · Looking good"
+        let attrs: [NSAttributedString.Key: Any] = [.font: NSFont.systemFont(ofSize: 11), .foregroundColor: SoftBloomArtwork.green]
         let size = text.size(withAttributes: attrs)
         text.draw(at: NSPoint(x: (bounds.width - size.width) / 2, y: (bounds.height - size.height) / 2), withAttributes: attrs)
     }

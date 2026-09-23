@@ -51,8 +51,8 @@ Upload installers as **Release assets**, never as source files committed to Git.
 Create a draft release, attach the signed files, review notes and checksums, then
 publish the release. For beta testing, mark it as a prerelease.
 
-The CI workflow tests and builds a development artifact for contributors. It does
-not publish releases, use signing credentials, or claim notarization.
+The CI workflow runs tests and verifies development packaging. It does not upload
+installers, publish releases, use signing credentials, or claim notarization.
 
 Once a stable release exists, these patterns provide download buttons without
 hosting a website (replace OWNER and REPO with the published repository):

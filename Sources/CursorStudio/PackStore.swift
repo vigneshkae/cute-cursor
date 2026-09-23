@@ -12,17 +12,36 @@ extension CursorStore {
                 guard !pack.name.isEmpty, pack.name.count <= 80,
                       pack.cursors.allSatisfy({ CursorRole(rawValue: $0.key) != nil && $0.value.isValid }) else { throw CocoaError(.fileReadCorruptFile) }
             }
-        } else {
-            var pack = CursorPack(name: "Lilac essentials")
-            for role in CursorRole.allCases {
-                let id = UUID(); let file = "\(id).png"
-                try OriginalArtwork.png(PackArtwork.image(for: role)).write(to: directory.appendingPathComponent(file), options: .atomic)
-                pack[role] = CursorItem(id: id, name: role.title, fileName: file,
-                    hotspotX: role == .pointer ? 0.22 : role == .link ? 0.41 : 0.5,
-                    hotspotY: role == .pointer ? 0.12 : role == .link ? 0.12 : 0.5, sourceNote: "Cute Cursor original")
+        }
+        // A separate receipt preserves user renames, edits, and intentional deletion.
+        let receipt = directory.appendingPathComponent("bundled-packs.json")
+        var installed = Set<String>()
+        if FileManager.default.fileExists(atPath: receipt.path) {
+            installed = try JSONDecoder().decode(Set<String>.self, from: Data(contentsOf: receipt))
+        }
+        if !installed.contains("soft-bloom-v1") {
+            if !packs.contains(where: { $0.id == SoftBloomArtwork.packID }) {
+                var pack = CursorPack(id: SoftBloomArtwork.packID, name: "Soft Bloom")
+                var created: [URL] = []
+                do {
+                    for role in CursorRole.allCases {
+                        let id = UUID(); let file = "\(id).png"
+                        let url = directory.appendingPathComponent(file)
+                        try OriginalArtwork.png(SoftBloomArtwork.image(for: role)).write(to: url, options: .atomic)
+                        created.append(url)
+                        let point = SoftBloomArtwork.hotspot(for: role)
+                        pack[role] = CursorItem(id: id, name: role.title, fileName: file, size: 40,
+                            hotspotX: point.x, hotspotY: point.y, sourceNote: "Soft Bloom original")
+                    }
+                    packs.insert(pack, at: 0)
+                    do { try persistPacks() } catch { packs.removeFirst(); throw error }
+                } catch {
+                    for url in created { try? FileManager.default.removeItem(at: url) }
+                    throw error
+                }
             }
-            packs = [pack]
-            try persistPacks()
+            installed.insert("soft-bloom-v1")
+            try JSONEncoder().encode(installed).write(to: receipt, options: .atomic)
         }
     }
 
