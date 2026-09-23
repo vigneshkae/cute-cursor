@@ -1,6 +1,11 @@
 # Changes
 
-## 0.2.0 — Mac beta candidate
+## 0.2.0 (4) — Mac beta 1
+
+- Distribute universal Developer ID signed Mac downloads with Apple notarization
+  and stapled verification tickets for both the app and DMG.
+- Preserve release staging files after packaging failures so notarization can
+  resume after a network timeout.
 
 - Add Soft Bloom as the default pack, with 11 botanical cursors at 40 pt.
 - Use a yellow and sage theme with custom menu popovers and a visible pack rename action.
@@ -23,6 +28,6 @@
 - Release code and original bundled artwork under MIT.
 
 Known limits: static images only; private system APIs; macOS 27 / Apple Silicon
-registry testing so far. Public notarization and the broader visual compatibility
-matrix are pending. Windows is implemented separately on `codex/windows` and
+registry testing so far. The broader visual compatibility matrix remains pending.
+Windows is implemented separately on `codex/windows` and
 remains an unsigned preview requiring hardware testing.

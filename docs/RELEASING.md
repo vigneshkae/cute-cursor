@@ -2,8 +2,10 @@
 
 ## Current release status
 
-0.2.0 is a beta candidate. Development builds are ad-hoc signed. No public release
-should be described as notarized until both signing and notarization have passed.
+0.2.0 (4), Mac beta 1, has passed Developer ID signing and Apple notarization.
+Both the app and DMG carry validated tickets and pass Gatekeeper assessment.
+Development builds remain ad-hoc signed. Each new release build must pass signing
+and notarization again before being described as notarized.
 Windows preview packages are maintained separately on `codex/windows`.
 
 ## Before a stable release
@@ -57,6 +59,13 @@ staples it, and writes:
 
 If signing or notarization fails, do not substitute development files in the
 release. Update versions in `Resources/Info.plist` before building a new release.
+
+If the notarization wait times out, Apple may still be processing the submission.
+The script preserves its staging folder when a release command fails. Check the
+existing submission with `notarytool info` before submitting again. Once accepted,
+staple and validate the retained app or DMG and finish packaging. A timeout is not
+a rejection; do not discard the signed files or replace them with a development
+build.
 
 ## GitHub
 

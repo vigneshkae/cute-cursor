@@ -17,7 +17,15 @@ if $release; then
     [[ -n "${NOTARYTOOL_PROFILE:-}" ]] || { print -u2 "Set NOTARYTOOL_PROFILE to a stored notarytool keychain profile."; exit 2; }
 fi
 staging_dir="$(mktemp -d /tmp/cute-cursor-package.XXXXXX)"
-trap 'rm -rf "$staging_dir"' EXIT
+cleanup() {
+    local build_exit_code=$?
+    if $release && (( build_exit_code != 0 )); then
+        print -u2 "Release packaging stopped. Preserved files for notarization recovery: $staging_dir"
+    else
+        rm -rf "$staging_dir"
+    fi
+}
+trap cleanup EXIT
 scratch_dir="${CUTE_CURSOR_BUILD_DIR:-/tmp/cute-cursor-release-build}"
 arch_args=()
 if $universal; then arch_args=(--arch arm64 --arch x86_64); fi

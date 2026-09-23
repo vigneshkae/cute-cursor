@@ -9,15 +9,20 @@ Cute Cursor lets you turn images into cursors and build a matching set for your 
 It comes with **Soft Bloom**, a yellow-and-sage flower pack with 11 cursor roles,
 each starting at **40 pt**.
 
-**Private test downloads are available.** Sign into GitHub with access to this
-repository and open the [Mac + Windows test release](https://github.com/vigneshkae/cute-cursor/releases/tag/private-test-2026-09-23.1).
-Choose the universal Mac DMG, Windows x64 ZIP (most PCs), or Windows ARM64 ZIP.
-Extract a Windows ZIP and run `CuteCursor.exe`; the runtime is included.
+**[Download the Mac beta](https://github.com/vigneshkae/cute-cursor/releases/tag/v0.2.0-beta.1)** —
+version 0.2.0 (4), Developer ID signed and notarized by Apple. One universal DMG
+supports Apple Silicon and Intel Macs, targeting macOS 14 or newer. Open the DMG,
+drag Cute Cursor to Applications, and open it there. A ZIP and SHA-256 checksums
+are also included. See the compatibility notes below for hardware testing limits.
 
-These are development builds: Mac is ad-hoc signed and unnotarized; Windows is
-unsigned. Security warnings may appear on first launch. Installation notes and
-SHA-256 checksums are included on the release page. Closing the window keeps
-custom cursors active; Quit / ⌘Q / Exit restores your originals.
+**Windows remains an unsigned preview.** The
+[earlier test release](https://github.com/vigneshkae/cute-cursor/releases/tag/private-test-2026-09-23.1)
+has a Windows x64 ZIP for Intel/AMD PCs and an ARM64 ZIP for Windows ARM devices.
+Extract the matching ZIP and run `CuteCursor.exe`; the runtime is included.
+Those Windows downloads are not covered by Apple's Mac notarization. Use the
+new Mac beta above instead of the older unnotarized Mac development downloads.
+
+Closing the window keeps custom cursors active; Quit / ⌘Q / Exit restores your originals.
 
 The Mac source remains on this branch. The Windows implementation and setup guide
 are on [codex/windows](https://github.com/vigneshkae/cute-cursor/tree/codex/windows).
@@ -154,7 +159,7 @@ pack preserves existing packs, renames, size changes, and intentional deletion.
 ## Roadmap
 
 - Finish Mac installation, upgrade, and compatibility testing.
-- Sign, notarize, and publish the first Mac beta as GitHub Release assets.
+- Gather feedback on the signed and notarized Mac beta.
 - Test the Windows implementation on x64 and ARM64 hardware, then prepare signed
   distribution.
 
