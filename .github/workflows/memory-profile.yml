@@ -1,0 +1,62 @@
+name: Measure private test memory
+on:
+  push:
+    paths:
+      - '.github/workflows/memory-profile.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  memory:
+    runs-on: windows-2025
+    timeout-minutes: 10
+    steps:
+      - name: Download the released x64 app
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: pwsh
+        run: |
+          gh release download private-test-2026-09-23.1 --repo "${{ github.repository }}" --pattern '*win-x64.zip' --dir "$env:RUNNER_TEMP/package"
+          Expand-Archive "$env:RUNNER_TEMP/package/CuteCursor-windows-preview-win-x64.zip" "$env:RUNNER_TEMP/app"
+      - name: Measure idle window and tray memory without applying cursors
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $app = Start-Process "$env:RUNNER_TEMP/app/CuteCursor.exe" -PassThru
+          $samples = [System.Collections.Generic.List[object]]::new()
+          function Sample([string]$state) {
+            $app.Refresh()
+            if ($app.HasExited) { throw 'The app exited before measurement.' }
+            $counter = Get-CimInstance Win32_PerfFormattedData_PerfProc_Process -Filter "IDProcess = $($app.Id)"
+            $samples.Add([pscustomobject]@{
+              state = $state
+              workingSetMiB = [math]::Round($app.WorkingSet64 / 1MB, 2)
+              privateWorkingSetMiB = [math]::Round($counter.WorkingSetPrivate / 1MB, 2)
+              privateCommitMiB = [math]::Round($app.PrivateMemorySize64 / 1MB, 2)
+              peakWorkingSetMiB = [math]::Round($app.PeakWorkingSet64 / 1MB, 2)
+            })
+          }
+          try {
+            Start-Sleep 15
+            for ($i = 0; $i -lt 3; $i++) { Sample 'window-open'; Start-Sleep 5 }
+            if (!$app.CloseMainWindow()) { throw 'Could not close the editor window into the tray.' }
+            Start-Sleep 10
+            for ($i = 0; $i -lt 3; $i++) { Sample 'tray'; Start-Sleep 5 }
+            $report = [pscustomobject]@{
+              release = 'private-test-2026-09-23.1'
+              os = (Get-CimInstance Win32_OperatingSystem).Caption
+              architecture = 'x64'
+              pack = 'Soft Bloom; fresh library; no global cursor replacement'
+              samples = $samples
+            }
+            $report | ConvertTo-Json -Depth 5 | Set-Content "$env:RUNNER_TEMP/windows-memory.json"
+            Get-Content "$env:RUNNER_TEMP/windows-memory.json"
+          } finally {
+            # No global cursors were applied. Dispose the isolated CI process.
+            if (!$app.HasExited) { Stop-Process -Id $app.Id -Force }
+          }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-memory-measurement
+          path: ${{ runner.temp }}/windows-memory.json
+          retention-days: 7
