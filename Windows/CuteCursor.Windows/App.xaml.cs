@@ -30,7 +30,11 @@ public partial class App : Application
             }
             var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "CuteCursor");
             if (automation) { temporaryDirectory = Path.Combine(Path.GetTempPath(), "CuteCursor-preview-" + Guid.NewGuid()); directory = temporaryDirectory; }
-            var window = new MainWindow(directory, automation); MainWindow = window; window.Show();
+            var window = new MainWindow(directory, automation);
+            // The hosted runner has a small virtual desktop. Minimum bounds keep
+            // the real visual tree at the review size without detaching its images.
+            if (automation) { window.MinWidth = 1220; window.MinHeight = 900; }
+            MainWindow = window; window.Show();
             if (automation)
             {
                 var output = Path.GetFullPath(e.Args[screenshotIndex + 1]);
@@ -38,16 +42,8 @@ public partial class App : Application
                 {
                     try
                     {
-                        // Render the actual WPF content at the design window size, independent
-                        // of the hosted runner's small virtual desktop and non-client chrome.
                         var content = (FrameworkElement)window.Content;
-                        window.Content = null;
-                        System.Windows.Documents.TextElement.SetFontFamily(content, window.FontFamily);
-                        System.Windows.Documents.TextElement.SetFontSize(content, window.FontSize);
-                        content.Width = 1200; content.Height = 820;
-                        content.Measure(new Size(1200, 820));
-                        content.Arrange(new Rect(0, 0, 1200, 820)); content.UpdateLayout();
-                        var target = new RenderTargetBitmap(1200, 820, 96, 96, PixelFormats.Pbgra32);
+                        var target = new RenderTargetBitmap((int)Math.Ceiling(content.ActualWidth), (int)Math.Ceiling(content.ActualHeight), 96, 96, PixelFormats.Pbgra32);
                         target.Render(content);
                         var png = new PngBitmapEncoder(); png.Frames.Add(BitmapFrame.Create(target));
                         using (var file = File.Create(output)) png.Save(file);
