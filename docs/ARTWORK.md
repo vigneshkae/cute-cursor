@@ -12,6 +12,9 @@ and downsamples them through the same image-validation path used for user images
 The flower theme uses rounded yellow petals, golden centers, cream hands, and
 sage-green stems and symbols.
 
+The Windows icon at `Windows/CuteCursor.Windows/Assets/CuteCursor.ico` wraps the
+bundled Soft Bloom pointer PNG in an ICO container; it introduces no new artwork.
+
 ## Earlier examples and app icon
 
 The geometric prototype artwork in `CursorModel.swift` and `PackArtwork.swift`,

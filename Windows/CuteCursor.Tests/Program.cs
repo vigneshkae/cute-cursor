@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 using CuteCursor.Core;
 
@@ -15,6 +16,7 @@ Test("Both Mac example packs import", () => Check(PackCodec.Read(File.ReadAllByt
 Test("Round trip preserves names, roles, images and geometry", () => Check(Json(bloom).SequenceEqual(Json(PackCodec.Read(PackCodec.Write(bloom))))));
 Test("Unknown format and version reject", () => { Reject(() => PackCodec.Read(Json(bloom with { Format = "Other" }))); Reject(() => PackCodec.Read(Json(bloom with { Version = 2 }))); });
 Test("Invalid JSON and oversized input reject", () => { Reject(() => PackCodec.Read("{"u8.ToArray())); Reject(() => PackCodec.Read(new byte[PackCodec.MaxBytes + 1])); });
+Test("Missing required metadata rejects", () => { Reject(() => PackCodec.Read(Encoding.UTF8.GetBytes(Encoding.UTF8.GetString(bloomBytes).Replace("\"version\"", "\"missingVersion\"")))); });
 Test("Unknown, duplicate and empty roles reject", () => { Reject(() => PackCodec.Write(With())); Reject(() => PackCodec.Write(With(first, first))); Reject(() => PackCodec.Write(With(first with { Role = "wait" }))); });
 Test("Bad sizes and hotspots reject", () =>
 {

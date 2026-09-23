@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Windows.Media.Imaging;
 namespace CuteCursor.Windows;
 
 public static class NativeSmokeTests
@@ -24,7 +25,29 @@ public static class NativeSmokeTests
         bool rejected = false;
         try { ImageCodec.Validate(invalid); } catch { rejected = true; }
         if (!rejected) throw new Exception("Truncated PNG was accepted.");
+        var directory = Path.Combine(Path.GetTempPath(), "CuteCursor-image-tests-" + Guid.NewGuid());
+        Directory.CreateDirectory(directory);
+        try
+        {
+            var pixels = Enumerable.Repeat((byte)255, 640 * 320 * 4).ToArray();
+            var source = BitmapSource.Create(640, 320, 300, 300, PixelFormats.Bgra32, null, pixels, 640 * 4);
+            void Save(string path, BitmapEncoder encoder, BitmapSource bitmap)
+            { encoder.Frames.Add(BitmapFrame.Create(bitmap)); using var file = File.Create(path); encoder.Save(file); }
+            foreach (var (extension, encoder) in new (string, BitmapEncoder)[] { ("png", new PngBitmapEncoder()), ("jpg", new JpegBitmapEncoder()), ("gif", new GifBitmapEncoder()), ("bmp", new BmpBitmapEncoder()), ("tif", new TiffBitmapEncoder()) })
+            {
+                var path = Path.Combine(directory, "import." + extension); Save(path, encoder, source);
+                var imported = ImageCodec.Import(path); var result = ImageCodec.Decode(imported.Png);
+                if (result.PixelWidth != 256 || result.PixelHeight != 128 || imported.Size != 40)
+                    throw new Exception("Image import lost its aspect ratio or default size: " + extension);
+            }
+            var transparent = BitmapSource.Create(2, 2, 96, 96, PixelFormats.Bgra32, null, new byte[16], 8);
+            var blankPath = Path.Combine(directory, "transparent.png"); Save(blankPath, new PngBitmapEncoder(), transparent);
+            bool blankRejected = false;
+            try { ImageCodec.Import(blankPath); } catch (InvalidDataException) { blankRejected = true; }
+            if (!blankRejected) throw new Exception("Fully transparent image was accepted.");
+        }
+        finally { Directory.Delete(directory, true); }
         var output = Environment.GetEnvironmentVariable("CUTE_CURSOR_SMOKE_RESULT");
-        if (output is not null) File.WriteAllText(output, JsonSerializer.Serialize(new { ok = true, nativeCursorsCreated = 44, systemCursorsChanged = 0 }));
+        if (output is not null) File.WriteAllText(output, JsonSerializer.Serialize(new { ok = true, nativeCursorsCreated = 44, imageFormatsImported = 5, systemCursorsChanged = 0 }));
     }
 }

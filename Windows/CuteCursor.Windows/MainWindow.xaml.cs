@@ -36,7 +36,12 @@ public partial class MainWindow : Window
         if (!automation)
         {
             tray = new System.Windows.Forms.NotifyIcon { Text = "Cute Cursor", Icon = System.Drawing.Icon.ExtractAssociatedIcon(Environment.ProcessPath!) ?? System.Drawing.SystemIcons.Application, Visible = true };
-            var menu = new System.Windows.Forms.ContextMenuStrip();
+            var menu = new System.Windows.Forms.ContextMenuStrip
+            {
+                BackColor = System.Drawing.Color.FromArgb(251, 250, 240),
+                ForeColor = System.Drawing.Color.FromArgb(51, 69, 46),
+                Renderer = new System.Windows.Forms.ToolStripProfessionalRenderer(new BloomTrayColors())
+            };
             menu.Items.Add("Open Cute Cursor", null, (_, _) => OpenWindow());
             menu.Items.Add("Restore cursors", null, (_, _) => Run(RestoreCursors));
             menu.Items.Add("Exit Cute Cursor", null, (_, _) => TryExit());
@@ -224,8 +229,9 @@ public partial class MainWindow : Window
         {
             try
             {
-                packMode = Path.GetExtension(path).Equals(".cutecursor", StringComparison.OrdinalIgnoreCase);
-                selectedId = packMode ? library.ImportPack(PackCodec.ReadFile(path)) : library.AddCursor(ImageCodec.Import(path)); added++;
+                var isPack = Path.GetExtension(path).Equals(".cutecursor", StringComparison.OrdinalIgnoreCase);
+                var importedId = isPack ? library.ImportPack(PackCodec.ReadFile(path)) : library.AddCursor(ImageCodec.Import(path));
+                packMode = isPack; selectedId = importedId; added++;
             }
             catch (Exception ex) { failures.Add($"{Path.GetFileName(path)}: {ex.Message}"); }
         }

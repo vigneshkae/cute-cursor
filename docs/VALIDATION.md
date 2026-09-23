@@ -54,3 +54,15 @@ clang scripts/test-system-pack.m Sources/CursorSystem/CursorSystem.c \
   -o /tmp/cute-cursor-system-pack
 /tmp/cute-cursor-system-pack
 ```
+
+## Windows source-preview automation
+
+The Windows implementation is isolated on `codex/windows`. The initial Windows
+Actions run passed the portable core tests, WPF build, 44 native cursor creation
+and hotspot checks, original-handle captures, isolated interface rendering, and
+self-contained x64 and ARM64 packaging. Mac CI also passed on the same branch.
+
+The current portable suite has 27 tests. Follow the branch's latest Windows
+workflow for subsequent UI and image-import checks. These checks do not replace
+system cursors, run the ARM64 executable, test a clean end-user installation, or
+establish hands-on Windows compatibility. See [the manual matrix](WINDOWS.md).

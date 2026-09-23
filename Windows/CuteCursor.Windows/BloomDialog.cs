@@ -6,6 +6,7 @@ public sealed class BloomDialog : Window
     public string Value => input?.Text.Trim() ?? "";
     private BloomDialog(Window? owner, string title, string message, string confirm, string? initial, bool cancellable)
     {
+        Style = (Style)Application.Current.FindResource(typeof(Window));
         Title = title; Owner = owner; Width = 440; SizeToContent = SizeToContent.Height;
         ResizeMode = ResizeMode.NoResize; WindowStartupLocation = owner is null ? WindowStartupLocation.CenterScreen : WindowStartupLocation.CenterOwner;
         ShowInTaskbar = owner is null;

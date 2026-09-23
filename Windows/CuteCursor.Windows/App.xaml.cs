@@ -38,8 +38,13 @@ public partial class App : Application
                 {
                     try
                     {
-                        var target = new RenderTargetBitmap((int)window.ActualWidth, (int)window.ActualHeight, 96, 96, PixelFormats.Pbgra32);
-                        target.Render(window);
+                        // Render the actual WPF content at the design window size, independent
+                        // of the hosted runner's small virtual desktop and non-client chrome.
+                        var content = (FrameworkElement)window.Content;
+                        content.Measure(new Size(1200, 820));
+                        content.Arrange(new Rect(0, 0, 1200, 820)); content.UpdateLayout();
+                        var target = new RenderTargetBitmap(1200, 820, 96, 96, PixelFormats.Pbgra32);
+                        target.Render(content);
                         var png = new PngBitmapEncoder(); png.Frames.Add(BitmapFrame.Create(target));
                         using (var file = File.Create(output)) png.Save(file);
                         window.Close(); Shutdown(0);
