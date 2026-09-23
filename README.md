@@ -9,11 +9,18 @@ Cute Cursor lets you turn images into cursors and build a matching set for your 
 It comes with **Soft Bloom**, a yellow-and-sage flower pack with 11 cursor roles,
 each starting at **40 pt**.
 
-**Source preview — not a finished release.** This repository contains the app's
-source, artwork, examples, and development tools. **There are no published DMG,
-ZIP app downloads, or Windows installers yet.** You can build the Mac app locally.
-Signing, notarization, and broader compatibility testing remain before a public
-installer release.
+**Private test downloads are available.** Sign into GitHub with access to this
+repository and open the [Mac + Windows test release](https://github.com/vigneshkae/cute-cursor/releases/tag/private-test-2026-09-23.1).
+Choose the universal Mac DMG, Windows x64 ZIP (most PCs), or Windows ARM64 ZIP.
+Extract a Windows ZIP and run `CuteCursor.exe`; the runtime is included.
+
+These are development builds: Mac is ad-hoc signed and unnotarized; Windows is
+unsigned. Security warnings may appear on first launch. Installation notes and
+SHA-256 checksums are included on the release page. Closing the window keeps
+custom cursors active; Quit / ⌘Q / Exit restores your originals.
+
+The Mac source remains on this branch. The Windows implementation and setup guide
+are on [codex/windows](https://github.com/vigneshkae/cute-cursor/tree/codex/windows).
 
 ![Cute Cursor showing the Soft Bloom pack and botanical interface](docs/images/soft-bloom.png)
 
@@ -109,8 +116,10 @@ signing out and back in clears the session changes. Normal quit attempts to
 restore the originals. Editing and local previews work even when system-wide
 replacement is unavailable.
 
-**Windows is planned and has not been implemented.** The portable pack format is
-intended to be shared, but each OS needs its own app and cursor integration.
+**Windows is implemented on a separate branch.** It shares the pack format and
+uses documented Win32 APIs for nine system roles. Grab and Grabbing are retained
+for preview and sharing. See the [Windows guide](https://github.com/vigneshkae/cute-cursor/blob/codex/windows/docs/WINDOWS.md);
+hands-on Windows compatibility testing is still pending.
 
 ## Development and checks
 
@@ -146,7 +155,8 @@ pack preserves existing packs, renames, size changes, and intentional deletion.
 
 - Finish Mac installation, upgrade, and compatibility testing.
 - Sign, notarize, and publish the first Mac beta as GitHub Release assets.
-- Build the Windows version with the same visual style and pack format.
+- Test the Windows implementation on x64 and ARM64 hardware, then prepare signed
+  distribution.
 
 See [release preparation](docs/RELEASING.md) and the [changelog](CHANGELOG.md).
 
