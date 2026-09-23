@@ -1,8 +1,10 @@
 # Contributing to Cute Cursor
 
-Use Xcode and macOS 14 or later. Read AGENTS.md, then run `./scripts/test.sh` before
-submitting a change. Keep changes focused. Add meaningful tests for pack parsing,
-persistence, image handling, and cursor registration behavior.
+For Mac changes, use Xcode and macOS 14 or later. Read AGENTS.md, then run
+`./scripts/test.sh` before submitting a change. For Windows changes, use the
+.NET 10 SDK and follow `Windows/AGENTS.md`; macOS is not required. Keep changes
+focused. Add meaningful tests for pack parsing, persistence, image handling, and
+cursor registration behavior.
 
 Do not copy code or images from cursor projects with incompatible licenses. New
 contributions must be compatible with the MIT license. Use original artwork or

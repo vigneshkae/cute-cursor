@@ -10,6 +10,10 @@ This is development source, not a signed public release. The initial target is
 Windows 11, x64 and ARM64. Actual system-wide behavior and accessibility still
 require hands-on Windows testing; a successful build is not that verification.
 
+![Windows Soft Bloom editor](images/windows-soft-bloom.png)
+
+*Rendered from the native WPF app on the Windows CI runner.*
+
 ## Implementation plan and status
 
 1. **Shared data — implemented.** Portable pack validation, independent library

@@ -62,7 +62,9 @@ Actions run passed the portable core tests, WPF build, 44 native cursor creation
 and hotspot checks, original-handle captures, isolated interface rendering, and
 self-contained x64 and ARM64 packaging. Mac CI also passed on the same branch.
 
-The current portable suite has 27 tests. Follow the branch's latest Windows
-workflow for subsequent UI and image-import checks. These checks do not replace
+The current portable suite has 27 tests. The expanded native checks also passed
+five image import formats and ran successfully from the packaged x64 executable.
+[Windows CI run](https://github.com/vigneshkae/cute-cursor/actions/runs/35822238203)
+includes the reviewed interface image saved under `docs/images/windows-soft-bloom.png`. These checks do not replace
 system cursors, run the ARM64 executable, test a clean end-user installation, or
 establish hands-on Windows compatibility. See [the manual matrix](WINDOWS.md).

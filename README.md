@@ -98,6 +98,10 @@ The script creates a self-contained, unsigned development ZIP with `CuteCursor.e
 and the license. It does not upload anything. See [Windows setup, architecture,
 recovery, and testing](docs/WINDOWS.md) before trying system-wide changes.
 
+![Cute Cursor for Windows with the Soft Bloom pack](docs/images/windows-soft-bloom.png)
+
+*Windows interface rendered from the WPF app in CI.*
+
 ## Image and pack support (Mac)
 
 
