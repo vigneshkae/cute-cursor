@@ -27,8 +27,8 @@ app_path="$staging_dir/Cute Cursor.app"
 mkdir -p "$app_path/Contents/MacOS" "$app_path/Contents/Resources" dist
 cp "$binary_dir/CursorStudio" "$app_path/Contents/MacOS/CursorStudio"
 if $universal; then
-    lipo -verify_arch arm64 "$app_path/Contents/MacOS/CursorStudio"
-    lipo -verify_arch x86_64 "$app_path/Contents/MacOS/CursorStudio"
+    lipo "$app_path/Contents/MacOS/CursorStudio" -verify_arch arm64
+    lipo "$app_path/Contents/MacOS/CursorStudio" -verify_arch x86_64
 fi
 cp Resources/Info.plist "$app_path/Contents/Info.plist"
 cp LICENSE "$app_path/Contents/Resources/LICENSE.txt"
