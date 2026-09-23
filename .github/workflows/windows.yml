@@ -38,6 +38,16 @@ jobs:
           }
       - name: Build self-contained x64 development package (no upload)
         run: ./scripts/build-windows.ps1 -Runtime win-x64
+      - name: Smoke test the packaged x64 executable (no system replacement)
+        shell: pwsh
+        run: |
+          $env:CUTE_CURSOR_SMOKE_RESULT = "$env:RUNNER_TEMP/packaged-smoke.json"
+          $process = Start-Process -FilePath "dist/windows/win-x64/CuteCursor.exe" -ArgumentList "--self-test" -Wait -PassThru
+          if ($process.ExitCode -ne 0 -or !(Test-Path $env:CUTE_CURSOR_SMOKE_RESULT)) {
+            if (Test-Path "$env:TEMP/CuteCursor-test-error.txt") { Get-Content "$env:TEMP/CuteCursor-test-error.txt" }
+            throw "Packaged x64 app failed its smoke tests."
+          }
+          Get-Content $env:CUTE_CURSOR_SMOKE_RESULT
       - name: Build self-contained ARM64 development package (no upload)
         run: ./scripts/build-windows.ps1 -Runtime win-arm64
       - name: Save UI review image only

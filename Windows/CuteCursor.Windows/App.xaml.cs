@@ -41,6 +41,10 @@ public partial class App : Application
                         // Render the actual WPF content at the design window size, independent
                         // of the hosted runner's small virtual desktop and non-client chrome.
                         var content = (FrameworkElement)window.Content;
+                        window.Content = null;
+                        System.Windows.Documents.TextElement.SetFontFamily(content, window.FontFamily);
+                        System.Windows.Documents.TextElement.SetFontSize(content, window.FontSize);
+                        content.Width = 1200; content.Height = 820;
                         content.Measure(new Size(1200, 820));
                         content.Arrange(new Rect(0, 0, 1200, 820)); content.UpdateLayout();
                         var target = new RenderTargetBitmap(1200, 820, 96, 96, PixelFormats.Pbgra32);

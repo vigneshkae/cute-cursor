@@ -114,14 +114,16 @@ dotnet Windows/CuteCursor.Windows/bin/Release/net10.0-windows/CuteCursor.dll --s
 Get-Content $env:CUTE_CURSOR_SMOKE_RESULT
 ```
 
-The portable suite covers pack round trips and rejection, geometry, persisted
+The 27-test portable suite covers pack round trips and rejection, geometry, persisted
 favorites, independent edits, deleted defaults, corrupt storage, preflight,
 partial packs, apply rollback and restoration retries. A fake backend tracks
 handle ownership and asserts that none leak after successful restoration.
 
 The native smoke check decodes the complete bundled pack, creates 44 cursor
 handles across four scale factors, verifies their native hotspots, and captures
-nine original handles. It **never calls SetSystemCursor**. The Windows workflow
+nine original handles. It also verifies five image import formats, size/aspect
+preservation, and rejection of transparent or corrupt images. It **never calls
+SetSystemCursor**. CI repeats it on the published x64 executable. The Windows workflow
 also renders the real WPF window with an isolated temporary library and builds
 both architecture packages without distributing them.
 

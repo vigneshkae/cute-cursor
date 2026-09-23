@@ -7,6 +7,9 @@
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <ImplicitUsings>disable</ImplicitUsings>
     <AssemblyName>CuteCursor</AssemblyName>
+    <Version>0.1.0-preview</Version>
+    <Product>Cute Cursor</Product>
+    <Description>Windows source preview of Cute Cursor</Description>
     <RootNamespace>CuteCursor.Windows</RootNamespace>
     <ApplicationIcon>Assets/CuteCursor.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
