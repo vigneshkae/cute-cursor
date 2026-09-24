@@ -2,6 +2,7 @@
 
 ## Windows 0.3.2 beta
 
+Download the [Windows 0.3.2 beta](https://github.com/vigneshkae/cute-cursor/releases/tag/windows-v0.3.2-beta.1).
 Windows builds are prepared from `codex/windows` and published as GitHub Release
 assets. The repository is public. These portable packages are unsigned testing
 builds, not signed final installers.
@@ -40,6 +41,7 @@ Actual system-wide Apply/Restore behavior still needs interactive Windows testin
 Each ZIP has an adjacent `.sha256` file. Compare its hash with
 `Get-FileHash -Algorithm SHA256` in PowerShell. See [Windows details](WINDOWS.md)
 for recovery, supported image formats, display scaling and the full test matrix.
+See the [validation record](WINDOWS_VALIDATION.md) for the packaged build checks.
 
 ## Mac
 
