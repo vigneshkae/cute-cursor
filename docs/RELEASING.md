@@ -2,13 +2,13 @@
 
 ## Current release status
 
-0.2.0 (4), Mac beta 1, has passed Developer ID signing and Apple notarization.
+0.3.0 (5), the Mac collection beta, has passed Developer ID signing and Apple notarization.
 Both the app and DMG carry validated tickets and pass Gatekeeper assessment.
 Development builds remain ad-hoc signed. Each new release build must pass signing
 and notarization again before being described as notarized.
 Windows preview packages are maintained separately on `codex/windows`.
 
-## Mac 0.3.0 release preparation
+## Mac 0.3.0 release contents
 
 The maintainer supplied 20 individual cursor options and approved proceeding
 with those, replacing the earlier plan to wait for 25. These are bundled in
@@ -21,8 +21,8 @@ points** on Mac (80 device pixels at 2× Retina scale), not 40 physical pixels.
 Fresh bundled cursors, all default pack roles, and new image imports use 40.
 Existing user size edits and imported pack settings remain intact.
 
-The Windows branch has not received these changes yet. The previous notarized
-Mac beta stays available until this new build passes signing and notarization.
+The Windows branch has not received these changes yet. The new Mac build and DMG have both passed signing, notarization, and ticket
+validation. The previous Mac beta remains available as an older release.
 
 ## Before a stable release
 
