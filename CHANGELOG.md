@@ -13,8 +13,10 @@
 - The user confirmed: **keep the font currently shown in the app**.
 - Keep the existing Mac rounded system wordmark and the current Windows Segoe UI
   treatment. The handwritten alternatives are not selected and are not bundled.
-- Bring the Windows build up to date with the 20 named cursors, size 40 defaults,
+- Windows 0.3.2 beta carries the 20 named cursors, size 40 defaults, matching
   flower icon, yellow-and-sage interface, and a true System Default action.
+- Unsigned x64 and ARM64 test ZIPs are published separately from the Mac beta.
+  Windows source remains on `codex/windows`; no Windows code is merged here.
 
 ## 0.3.1 (6) — Mac icon and reset fix
 

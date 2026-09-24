@@ -17,12 +17,15 @@ supports Apple Silicon and Intel Macs, targeting macOS 14 or newer. Open the DMG
 drag Cute Cursor to Applications, and open it there. A ZIP and SHA-256 checksums
 are also included. See the compatibility notes below for hardware testing limits.
 
-**Windows remains an unsigned preview.** The
-[earlier test release](https://github.com/vigneshkae/cute-cursor/releases/tag/private-test-2026-09-23.1)
-has a Windows x64 ZIP for Intel/AMD PCs and an ARM64 ZIP for Windows ARM devices.
-Extract the matching ZIP and run `CuteCursor.exe`; the runtime is included.
-Those Windows downloads are not covered by Apple's Mac notarization. Use the
-new Mac beta above instead of the older unnotarized Mac development downloads.
+**[Download the Windows 0.3.2 beta](https://github.com/vigneshkae/cute-cursor/releases/tag/windows-v0.3.2-beta.1)** —
+includes the 20 named cursors, Soft Bloom pack, visual size 40 defaults, matching
+flower icon, and System Default action. The current app font is retained.
+Choose **x64** for Intel/AMD PCs or **ARM64** for Windows ARM devices. Extract the
+matching ZIP and run `CuteCursor.exe`; the runtime is included.
+Windows downloads are **unsigned testing builds** targeting Windows 11.
+The packaged x64 app passed automated native checks; live Apply/Restore and
+Windows ARM hardware testing remain. See the
+[Windows testing guide](https://github.com/vigneshkae/cute-cursor/blob/codex/windows/docs/TESTING_DOWNLOADS.md).
 
 Closing the window keeps custom cursors active; Quit / ⌘Q / Exit restores your originals.
 
