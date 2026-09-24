@@ -32,6 +32,7 @@ public partial class MainWindow : Window
         recoveryPath = Path.Combine(directory, "active-session.txt");
         recoveryPending = File.Exists(recoveryPath);
         InitializeComponent();
+        RoleGrid.SizeChanged += (_, e) => RoleGrid.Columns = Math.Clamp((int)(e.NewSize.Width / 180), 2, 4);
         selectedId = library.State.Cursors.FirstOrDefault()?.Id;
         if (!automation)
         {
@@ -172,7 +173,7 @@ public partial class MainWindow : Window
                     card.Children.Add(new Image { Source = slot is null ? null : ImageCodec.Decode(slot.Png), Width = 30, Height = 34, Margin = new Thickness(0, 0, 8, 0) });
                     var labels = new StackPanel { VerticalAlignment = VerticalAlignment.Center };
                     labels.Children.Add(new TextBlock { Text = Roles.Title(role), FontSize = 12, FontWeight = FontWeights.SemiBold });
-                    labels.Children.Add(new TextBlock { Text = !Roles.SystemIds.ContainsKey(role) ? "Preview only" : slot is null ? "Original" : $"{slot.Size:0} px at 100%", FontSize = 10, Foreground = (Brush)FindResource("Muted") });
+                    labels.Children.Add(new TextBlock { Text = !Roles.SystemIds.ContainsKey(role) ? "Preview only" : slot is null ? "Original" : $"Size {slot.Size:0}", FontSize = 10, Foreground = (Brush)FindResource("Muted") });
                     card.Children.Add(labels);
                     var button = new Button { Content = card, Padding = new Thickness(9, 10, 7, 10), Margin = new Thickness(3), HorizontalContentAlignment = HorizontalAlignment.Stretch, Background = (Brush)FindResource(role == selectedRole ? "Yellow" : "Paper") };
                     System.Windows.Automation.AutomationProperties.SetName(button, Roles.Title(role));
