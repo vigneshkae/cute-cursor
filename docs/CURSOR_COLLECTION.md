@@ -5,7 +5,7 @@ All start at 40 logical points on a fresh install. System Default restores the M
 
 1. Ancestor
 2. Floral Cross
-3. Cigarette
+3. No Smoking
 4. Syringe
 5. Cricket Bat
 6. Rose Lipstick
