@@ -8,22 +8,13 @@
   collection source. The published 0.3.1 download predates these name changes;
   include them in the next packaged release.
 
-### Pending final design change
+### Final typography decision
 
-- Replace the **Cute Cursor header wordmark** font with a cute open-source handwritten font
-  that suits the yellow-and-sage Soft Bloom theme. Font selection is pending;
-  no font change has been applied yet.
-- The user clarified that the desired direction is handwritten. Revised
-  shortlist: Caveat SemiBold (natural and expressive), Patrick Hand (neat and
-  friendly), Handlee (delicate and casual), and Kalam (a lively pen-drawn feel).
-- Recommendation: Caveat SemiBold with the flower mark. This is a design
-  suggestion, not an approved font selection.
-- Each shortlisted family uses SIL OFL 1.1. If bundled, retain its copyright
-  notice and OFL license alongside the app's separate MIT license. Sources:
-  [Caveat](https://github.com/google/fonts/blob/main/ofl/caveat/OFL.txt),
-  [Patrick Hand](https://github.com/google/fonts/blob/main/ofl/patrickhand/OFL.txt),
-  [Handlee](https://github.com/google/fonts/blob/main/ofl/handlee/OFL.txt),
-  [Kalam](https://github.com/google/fonts/blob/main/ofl/kalam/OFL.txt).
+- The user confirmed: **keep the font currently shown in the app**.
+- Keep the existing Mac rounded system wordmark and the current Windows Segoe UI
+  treatment. The handwritten alternatives are not selected and are not bundled.
+- Bring the Windows build up to date with the 20 named cursors, size 40 defaults,
+  flower icon, yellow-and-sage interface, and a true System Default action.
 
 ## 0.3.1 (6) — Mac icon and reset fix
 
