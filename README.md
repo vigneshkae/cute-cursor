@@ -6,8 +6,10 @@
 <p align="center">Native macOS app · Custom cursor packs · MIT licensed</p>
 
 Cute Cursor lets you turn images into cursors and build a matching set for your Mac.
-It comes with **Soft Bloom**, a yellow-and-sage flower pack with 11 cursor roles,
-each starting at **40 pt**.
+It includes **20 individual cursor designs** and **Soft Bloom**, a yellow-and-sage flower pack with 11 cursor roles,
+each starting at **40 pt**. New image imports also start at 40.
+The collection includes flowers, food, a rocket, a guitar, and more;
+see the [complete cursor collection](docs/CURSOR_COLLECTION.md).
 
 **[Download the Mac beta](https://github.com/vigneshkae/cute-cursor/releases/tag/v0.2.0-beta.1)** —
 version 0.2.0 (4), Developer ID signed and notarized by Apple. One universal DMG
@@ -39,7 +41,7 @@ are on [codex/windows](https://github.com/vigneshkae/cute-cursor/tree/codex/wind
   accents across all 11 slots. Every default slot starts at 40 pt and is editable.
 - **Apply across your Mac.** Use Apply cursor or Apply pack. Some apps draw their
   own cursors; see the compatibility notes below.
-- **Return to normal.** Restore default stays in the bottom bar and menu bar.
+- **Return to normal.** Choose System Default in the library, bottom bar, or menu bar.
   Quitting also restores the original cursors; closing the window keeps the app running.
 - **Share your work.** Export one `.cutecursor` file with its images, sizes, and
   click points. Import through the app or drag and drop.

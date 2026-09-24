@@ -5,12 +5,11 @@ import AppKit
 struct CursorStudioApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject private var store = CursorStore()
-    @State private var openedLibrary = false
 
     var body: some Scene {
         Window("Cute Cursor", id: "studio") {
             StudioView().environmentObject(store)
-                .onAppear { if !openedLibrary { store.packMode = true; openedLibrary = true }; delegate.store = store; NSApp.setActivationPolicy(.regular); NSApp.activate(ignoringOtherApps: true) }
+                .onAppear { delegate.store = store; NSApp.setActivationPolicy(.regular); NSApp.activate(ignoringOtherApps: true) }
         }
         .defaultSize(width: 1060, height: 820)
         .windowStyle(.hiddenTitleBar)
@@ -24,7 +23,7 @@ struct CursorStudioApp: App {
             CommandMenu("Cursor") {
                 Button(store.packMode ? "Apply Pack" : "Apply Pointer", action: store.apply).keyboardShortcut(.return, modifiers: .command)
                     .disabled((store.packMode ? store.selectedPack?.cursors.isEmpty != false : store.selected == nil) || !store.systemAvailable)
-                Button("Restore Default", action: store.restore).keyboardShortcut("r").disabled(!store.hasActiveCursors)
+                Button("System Default", action: store.restore).keyboardShortcut("r")
             }
         }
         MenuBarExtra("Cute Cursor", systemImage: "cursorarrow.rays") {
@@ -39,7 +38,7 @@ struct StudioMenu: View {
     var body: some View {
         Text(!store.hasActiveCursors ? "Original cursors" : "Custom cursors active")
         Button("Open Cute Cursor") { openWindow(id: "studio"); NSApp.activate(ignoringOtherApps: true) }
-        Button("Restore Default", action: store.restore).disabled(!store.hasActiveCursors)
+        Button("System Default", action: store.restore)
         Divider()
         Button("Quit Cute Cursor") { NSApp.terminate(nil) }.keyboardShortcut("q")
     }

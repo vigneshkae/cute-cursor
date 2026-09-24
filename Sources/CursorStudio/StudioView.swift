@@ -36,6 +36,15 @@ struct StudioView: View {
                 Group {
                     if store.packMode {
                         PackEditor()
+                    } else if store.selectedID == nil {
+                        VStack(spacing: 16) {
+                            Image(systemName: "cursorarrow").font(.system(size: 44))
+                            Text("System Default").font(.title2.weight(.semibold))
+                            Text("Your Mac’s original cursors, with your system size and colors.")
+                                .foregroundStyle(StudioStyle.muted)
+                            Text("Choose a cursor from the library whenever you want a change.")
+                                .font(.callout).foregroundStyle(StudioStyle.muted)
+                        }.frame(maxWidth: .infinity, maxHeight: .infinity)
                     } else if let item = store.selected, let image = store.image(for: item) {
                         ScrollView {
                             CursorEditor(item: item, image: image).id(item.id).padding(2)
@@ -142,6 +151,19 @@ struct StudioView: View {
                 TextField("Find a cursor", text: $store.search).textFieldStyle(.plain)
             }.font(.system(size: 12)).padding(10).background(.white, in: RoundedRectangle(cornerRadius: 9))
                 .overlay(RoundedRectangle(cornerRadius: 9).strokeBorder(StudioStyle.line))
+            Button(action: store.restore) {
+                HStack(spacing: 12) {
+                    Image(systemName: "cursorarrow").font(.system(size: 22)).frame(width: 34)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("System Default").font(.system(size: 12, weight: .semibold))
+                        Text("Original Mac cursors").font(.system(size: 10)).foregroundStyle(StudioStyle.muted)
+                    }
+                    Spacer(minLength: 0)
+                    if !store.hasActiveCursors { Image(systemName: "checkmark").foregroundStyle(StudioStyle.accent) }
+                }.padding(12).frame(maxWidth: .infinity, alignment: .leading)
+                    .background(.white, in: RoundedRectangle(cornerRadius: 13))
+                    .overlay(RoundedRectangle(cornerRadius: 13).strokeBorder(store.selectedID == nil ? StudioStyle.accent : StudioStyle.line))
+            }.buttonStyle(.plain).help("Restore the system default cursors")
             ScrollView {
                 LazyVStack(spacing: 10) {
                     ForEach(store.visibleItems) { item in
@@ -227,8 +249,8 @@ struct StudioView: View {
                 }
             }
             Spacer(minLength: 12)
-            Button(action: store.restore) { Label("Restore default", systemImage: "arrow.counterclockwise") }
-                .buttonStyle(SecondaryButtonStyle()).disabled(!store.hasActiveCursors)
+            Button(action: store.restore) { Label("System default", systemImage: "arrow.counterclockwise") }
+                .buttonStyle(SecondaryButtonStyle())
                 .help("Restore your original Mac cursors (⌘R)")
             Button(action: store.apply) {
                 Label(selectionIsApplied ? "Applied" : store.packMode ? "Apply pack" : "Apply cursor",

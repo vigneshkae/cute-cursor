@@ -41,6 +41,7 @@ fi
 cp Resources/Info.plist "$app_path/Contents/Info.plist"
 cp LICENSE "$app_path/Contents/Resources/LICENSE.txt"
 ditto --norsrc Sources/CursorStudio/Resources/SoftBloom "$app_path/Contents/Resources/SoftBloom"
+ditto --norsrc Sources/CursorStudio/Resources/Collection "$app_path/Contents/Resources/Collection"
 swift scripts/make-icon.swift "$staging_dir/AppIcon.iconset"
 iconutil --convert icns "$staging_dir/AppIcon.iconset" --output "$app_path/Contents/Resources/AppIcon.icns"
 xattr -cr "$app_path"

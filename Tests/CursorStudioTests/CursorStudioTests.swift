@@ -99,7 +99,7 @@ final class CursorStudioTests: XCTestCase {
         try Data("bad".utf8).write(to: invalid)
         let store = CursorStore(directory: root.appendingPathComponent("Library"))
         store.importFiles([invalid, valid])
-        XCTAssertEqual(store.items.count, 4)
+        XCTAssertEqual(store.items.count, 21)
         XCTAssertEqual(store.selected?.name, "good")
         XCTAssertTrue(store.error?.contains("bad.png") == true)
     }
@@ -111,10 +111,10 @@ final class CursorStudioTests: XCTestCase {
         let url = root.appendingPathComponent("my-ghost.png")
         try OriginalArtwork.png(OriginalArtwork.image(1)).write(to: url)
         let store = CursorStore(directory: library)
-        XCTAssertEqual(store.items.count, 3)
+        XCTAssertEqual(store.items.count, 20)
         store.importFiles([url])
         XCTAssertNil(store.error)
-        XCTAssertEqual(store.items.count, 4)
+        XCTAssertEqual(store.items.count, 21)
         let id = store.selectedID
         store.update { $0.name = "My custom ghost"; $0.size = 45; $0.isFavorite = true; $0.hotspotX = 0.42 }
         let restored = CursorStore(directory: library)
@@ -126,7 +126,7 @@ final class CursorStudioTests: XCTestCase {
         XCTAssertNotNil(restored.image(for: restored.selected!))
         restored.deleteSelected()
         XCTAssertNil(restored.error)
-        XCTAssertEqual(CursorStore(directory: library).items.count, 3)
+        XCTAssertEqual(CursorStore(directory: library).items.count, 20)
         XCTAssertTrue(FileManager.default.fileExists(atPath: url.path))
     }
 

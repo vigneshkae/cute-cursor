@@ -1,0 +1,162 @@
+[
+  {
+    "id": "E9C8EC9B-CAB9-4B4F-8FCE-D6B9847922DD",
+    "name": "Little Swimmer",
+    "originalName": "Ancestor",
+    "resource": "little-swimmer.png",
+    "hotspotX": 0.16543222402597402,
+    "hotspotY": 0.15607244318181818
+  },
+  {
+    "id": "AE48E816-B1D4-4138-A423-FBBFD5810254",
+    "name": "Floral Cross",
+    "originalName": "Cute Cross",
+    "resource": "floral-cross.png",
+    "hotspotX": 0.3430905032467532,
+    "hotspotY": 0.06353997564935066
+  },
+  {
+    "id": "B90F2269-998D-4A1B-A0C8-9D9BA2D6230A",
+    "name": "Cigarette",
+    "originalName": "No Smoking",
+    "resource": "cigarette.png",
+    "hotspotX": 0.12116984577922078,
+    "hotspotY": 0.1485643262987013
+  },
+  {
+    "id": "EEB8D088-8AFC-497F-A03C-D75D2357F25E",
+    "name": "Syringe",
+    "originalName": "Cute Syrenge",
+    "resource": "syringe.png",
+    "hotspotX": 0.1,
+    "hotspotY": 0.1
+  },
+  {
+    "id": "5C835667-02C1-445A-AC50-6CD6151DDA21",
+    "name": "Cricket Bat",
+    "originalName": "Bat",
+    "resource": "cricket-bat.png",
+    "hotspotX": 0.13580560064935066,
+    "hotspotY": 0.06455458603896104
+  },
+  {
+    "id": "9E8BD73B-E562-4643-9CE8-5F7C3A3B9FAE",
+    "name": "Rose Lipstick",
+    "originalName": "Lipstick",
+    "resource": "rose-lipstick.png",
+    "hotspotX": 0.1,
+    "hotspotY": 0.1
+  },
+  {
+    "id": "6AE90E68-D475-4D79-8316-8681EB8B7D94",
+    "name": "Cheeky Finger",
+    "originalName": "Finger",
+    "resource": "cheeky-finger.png",
+    "hotspotX": 0.22960633116883117,
+    "hotspotY": 0.09628652597402597
+  },
+  {
+    "id": "D5064C7A-B886-4A71-A03F-367B3199FD43",
+    "name": "Carrot",
+    "originalName": "Carrot",
+    "resource": "carrot.png",
+    "hotspotX": 0.1,
+    "hotspotY": 0.1
+  },
+  {
+    "id": "2F10361B-0747-48A9-BDC1-9426C91A0051",
+    "name": "Rocket",
+    "originalName": "Space Ship",
+    "resource": "rocket.png",
+    "hotspotX": 0.1,
+    "hotspotY": 0.1
+  },
+  {
+    "id": "A46E0FDC-977C-49E8-B446-19B0B9B1F83F",
+    "name": "Paper Plane",
+    "originalName": "Paper Plane",
+    "resource": "paper-plane.png",
+    "hotspotX": 0.09007203733766234,
+    "hotspotY": 0.1484375
+  },
+  {
+    "id": "A26AB7A3-F029-4723-AF06-AADDB9861699",
+    "name": "Pizza Slice",
+    "originalName": "Pizza",
+    "resource": "pizza-slice.png",
+    "hotspotX": 0.1,
+    "hotspotY": 0.1
+  },
+  {
+    "id": "748D87EE-A960-4080-9B61-68140FDDBEF0",
+    "name": "French Fries",
+    "originalName": "Fries",
+    "resource": "french-fries.png",
+    "hotspotX": 0.3143770292207792,
+    "hotspotY": 0.15234375
+  },
+  {
+    "id": "7D183E9E-94C4-47D0-8174-CD4330CD6A3B",
+    "name": "Pink Tulip",
+    "originalName": "Tulip",
+    "resource": "pink-tulip.png",
+    "hotspotX": 0.17091112012987014,
+    "hotspotY": 0.15812702922077923
+  },
+  {
+    "id": "D4DDA9C8-B0FC-4A7E-BD18-DD469C6CB27E",
+    "name": "Acoustic Guitar",
+    "originalName": "Guitar",
+    "resource": "acoustic-guitar.png",
+    "hotspotX": 0.12406148538961038,
+    "hotspotY": 0.0992288961038961
+  },
+  {
+    "id": "6D1AB7DD-7D54-46AC-B7D4-E6E4FD5D3A4B",
+    "name": "Trishul",
+    "originalName": "Trishool",
+    "resource": "trishul.png",
+    "hotspotX": 0.1,
+    "hotspotY": 0.1
+  },
+  {
+    "id": "748FFEB5-D534-4C4B-A4F3-432DF284B757",
+    "name": "Golden Vel",
+    "originalName": "Vel",
+    "resource": "golden-vel.png",
+    "hotspotX": 0.138671875,
+    "hotspotY": 0.08545556006493507
+  },
+  {
+    "id": "53E3ECDA-DCF0-47DB-A330-EAED4B715C0A",
+    "name": "Sunflower",
+    "originalName": "Sunflower",
+    "resource": "sunflower.png",
+    "hotspotX": 0.2727780032467532,
+    "hotspotY": 0.12743506493506493
+  },
+  {
+    "id": "AF369881-4353-4DC2-A424-DD5173D2FB1A",
+    "name": "Soft Bloom",
+    "originalName": "Cute Cursor",
+    "resource": "soft-bloom.png",
+    "hotspotX": 0.13222909902597402,
+    "hotspotY": 0.18676440746753248
+  },
+  {
+    "id": "259DAC30-2B93-4A1B-A03E-11B8F1165616",
+    "name": "Floral Vel",
+    "originalName": "Cute Vel",
+    "resource": "floral-vel.png",
+    "hotspotX": 0.18628246753246752,
+    "hotspotY": 0.08857548701298701
+  },
+  {
+    "id": "757AA937-D77C-418D-AC56-E3FDBBE308A0",
+    "name": "Crescent Moon",
+    "originalName": "Crescent",
+    "resource": "crescent-moon.png",
+    "hotspotX": 0.6046570616883117,
+    "hotspotY": 0.1134080762987013
+  }
+]

@@ -23,8 +23,10 @@ final class CursorStore: ObservableObject {
     private(set) var directory: URL
     var images: [UUID: NSImage] = [:]
     var canWrite = true
+    private let restoreSystemCursors: () -> Int32
 
-    init(directory: URL? = nil) {
+    init(directory: URL? = nil, restoreSystemCursors: @escaping () -> Int32 = { CSRestorePointer() }) {
+        self.restoreSystemCursors = restoreSystemCursors
         self.directory = directory ?? FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("CursorStudio", isDirectory: true)
         do {
             try FileManager.default.createDirectory(at: self.directory, withIntermediateDirectories: true)
@@ -37,19 +39,9 @@ final class CursorStore: ObservableObject {
                         throw CocoaError(.fileReadCorruptFile)
                     }
                 }
-            } else {
-                for (index, name) in ["Lilac", "Little Boo", "Daydream"].enumerated() {
-                    let id = UUID()
-                    let file = "\(id).png"
-                    let image = OriginalArtwork.image(index)
-                    try OriginalArtwork.png(image).write(to: self.directory.appendingPathComponent(file), options: .atomic)
-                    images[id] = image
-                    items.append(CursorItem(id: id, name: name, fileName: file, hotspotX: index == 0 ? 0.22 : 0.5,
-                                            hotspotY: index == 0 ? 0.12 : 0.5, sourceNote: "Studio original"))
-                }
-                try persist()
             }
             try loadPacks()
+            try loadBundledCollection()
             selectedID = items.first?.id
             selectedPackID = packs.first(where: { $0.id == SoftBloomArtwork.packID })?.id ?? packs.first?.id
         } catch {
@@ -176,9 +168,8 @@ final class CursorStore: ObservableObject {
     }
 
     func restore() {
-        guard hasActiveCursors else { return }
-        let result = CSRestorePointer()
-        if result == 0 { activeID = nil; appliedSnapshot = nil; activePackID = nil; appliedPackSnapshot = nil; needsRestore = false; notice = "Your original cursors are restored." }
+        let result = hasActiveCursors ? restoreSystemCursors() : 0
+        if result == 0 { activeID = nil; appliedSnapshot = nil; activePackID = nil; appliedPackSnapshot = nil; needsRestore = false; selectedID = nil; packMode = false; notice = "System default cursors restored." }
         else { needsRestore = true; error = "macOS couldn’t restore the pointer (code \(result)). Try again; signing out also clears this session’s custom pointer." }
     }
 }

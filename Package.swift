@@ -7,7 +7,7 @@ let package = Package(
     products: [.executable(name: "CursorStudio", targets: ["CursorStudio"])],
     targets: [
         .target(name: "CursorSystem", linkerSettings: [.linkedFramework("ApplicationServices")]),
-        .executableTarget(name: "CursorStudio", dependencies: ["CursorSystem"], resources: [.copy("Resources/SoftBloom")]),
+        .executableTarget(name: "CursorStudio", dependencies: ["CursorSystem"], resources: [.copy("Resources/SoftBloom"), .copy("Resources/Collection")]),
         .testTarget(name: "CursorStudioTests", dependencies: ["CursorStudio"])
     ]
 )

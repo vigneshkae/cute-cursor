@@ -8,6 +8,22 @@ Development builds remain ad-hoc signed. Each new release build must pass signin
 and notarization again before being described as notarized.
 Windows preview packages are maintained separately on `codex/windows`.
 
+## Mac 0.3.0 release preparation
+
+The maintainer supplied 20 individual cursor options and approved proceeding
+with those, replacing the earlier plan to wait for 25. These are bundled in
+`Resources/Collection`, with curated names and the supplied click points.
+The Mac app now uses the same Soft Bloom image for its icon and header logo.
+System Default restores the native cursors and clears the custom preview.
+
+The maintainer confirmed that “40” means the existing visual size: **40 logical
+points** on Mac (80 device pixels at 2× Retina scale), not 40 physical pixels.
+Fresh bundled cursors, all default pack roles, and new image imports use 40.
+Existing user size edits and imported pack settings remain intact.
+
+The Windows branch has not received these changes yet. The previous notarized
+Mac beta stays available until this new build passes signing and notarization.
+
 ## Before a stable release
 
 - Run `./scripts/test.sh` and the opt-in system pack test described in README.

@@ -6,7 +6,7 @@ struct CursorItem: Codable, Identifiable, Equatable {
     var id: UUID
     var name: String
     var fileName: String
-    var size: Double = 32
+    var size: Double = 40
     var hotspotX: Double = 0.1
     var hotspotY: Double = 0.1
     var isFavorite: Bool = false

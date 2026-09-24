@@ -1,5 +1,15 @@
 # Changes
 
+## 0.3.0 (5) — Mac collection release
+
+- Bundle 20 maintainer-supplied cursors with clear, consistent names.
+- Start every new cursor and default pack role at 40 logical points.
+- Adopt matching uploaded originals without duplicates and preserve user edits.
+- Keep intentional deletions and renames when reopening the app.
+- Add a System Default choice that restores native cursors and clears the custom preview.
+- Generate the Dock/Finder icon from the exact flower used in the app header.
+- Open the individual cursor collection first.
+
 ## 0.2.0 (4) — Mac beta 1
 
 - Distribute universal Developer ID signed Mac downloads with Apple notarization

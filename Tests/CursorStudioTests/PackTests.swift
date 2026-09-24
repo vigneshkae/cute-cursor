@@ -103,7 +103,7 @@ final class PackTests: XCTestCase {
         XCTAssertEqual(store.selectedPack?.cursors.count, 10)
         let decoded = try PortablePack.decode(store.portablePack(XCTUnwrap(store.selectedPack)))
         XCTAssertFalse(decoded.cursors.contains { $0.role == .link })
-        XCTAssertEqual(store.items.count, 3)
+        XCTAssertEqual(store.items.count, 20)
     }
 
     @MainActor
