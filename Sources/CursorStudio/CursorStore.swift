@@ -25,7 +25,7 @@ final class CursorStore: ObservableObject {
     var canWrite = true
     private let restoreSystemCursors: () -> Int32
 
-    init(directory: URL? = nil, restoreSystemCursors: @escaping () -> Int32 = { CSRestorePointer() }) {
+    init(directory: URL? = nil, restoreSystemCursors: @escaping () -> Int32 = { CSRestoreSystemDefaults() }) {
         self.restoreSystemCursors = restoreSystemCursors
         self.directory = directory ?? FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("CursorStudio", isDirectory: true)
         do {
@@ -168,7 +168,8 @@ final class CursorStore: ObservableObject {
     }
 
     func restore() {
-        let result = hasActiveCursors ? restoreSystemCursors() : 0
+        // A previous process can leave overrides even when this store is idle.
+        let result = restoreSystemCursors()
         if result == 0 { activeID = nil; appliedSnapshot = nil; activePackID = nil; appliedPackSnapshot = nil; needsRestore = false; selectedID = nil; packMode = false; notice = "System default cursors restored." }
         else { needsRestore = true; error = "macOS couldn’t restore the pointer (code \(result)). Try again; signing out also clears this session’s custom pointer." }
     }

@@ -11,8 +11,8 @@ each starting at **40 pt**. New image imports also start at 40.
 The collection includes flowers, food, a rocket, a guitar, and more;
 see the [complete cursor collection](docs/CURSOR_COLLECTION.md).
 
-**[Download the Mac beta](https://github.com/vigneshkae/cute-cursor/releases/tag/v0.3.0-beta.1)** —
-version 0.3.0 (5), Developer ID signed and notarized by Apple. One universal DMG
+**[Download the Mac beta](https://github.com/vigneshkae/cute-cursor/releases/tag/v0.3.1-beta.1)** —
+version 0.3.1 (6), Developer ID signed and notarized by Apple. One universal DMG
 supports Apple Silicon and Intel Macs, targeting macOS 14 or newer. Open the DMG,
 drag Cute Cursor to Applications, and open it there. A ZIP and SHA-256 checksums
 are also included. See the compatibility notes below for hardware testing limits.
@@ -119,7 +119,8 @@ older macOS versions. Some apps and websites use their own cursor rendering.
 
 If custom pointer colors in macOS Accessibility settings prevent replacement,
 reset those colors and try again. If the app crashes with custom cursors active,
-signing out and back in clears the session changes. Normal quit attempts to
+reopen the app and choose System Default; signing out and back in also clears
+the session changes. Normal quit attempts to
 restore the originals. Editing and local previews work even when system-wide
 replacement is unavailable.
 

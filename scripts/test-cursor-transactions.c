@@ -27,6 +27,18 @@ static CGError fakeRegister(int32_t c, const char *name, bool a, bool b, CGSize 
     return 0;
 }
 static CGError fakeReset(int32_t c) { return 0; }
+static CFArrayRef nativeImages;
+static int nativeResets, accessibilityRegistrations;
+static bool accessibilityColors;
+static bool fakeUsesAccessibility(void) { return accessibilityColors; }
+static bool fakeRegisterAccessibility(void) { accessibilityRegistrations++; return true; }
+static void fakeNativeReset(void) {
+    nativeResets++;
+    for (size_t i = 0; i < SLOT_COUNT; i++) {
+        CFRelease(registry[i].images);
+        registry[i] = (SavedCursor){CGSizeMake(20,20), CGPointMake(2,2), 1, 0, CFRetain(nativeImages)};
+    }
+}
 
 int main(void) {
     // Resolve once without invoking any system registry operation, then use fakes.
@@ -36,6 +48,9 @@ int main(void) {
     CGContextRef context = CGBitmapContextCreate(NULL, 32, 32, 8, 0, space, kCGImageAlphaPremultipliedLast);
     CGImageRef image = CGBitmapContextCreateImage(context);
     CFArrayRef original = CSCreatePointerImages(image, 20, 20);
+    nativeImages = original;
+    resetNativeCursors = fakeNativeReset; usesAccessibilityCursors = fakeUsesAccessibility;
+    registerAccessibilityCursors = fakeRegisterAccessibility;
     for (size_t i = 0; i < SLOT_COUNT; i++) registry[i] = (SavedCursor){CGSizeMake(20,20), CGPointMake(2,2), 1, 0, CFRetain(original)};
     CSCursorDefinition pointer = {0,image,32,32,3,4};
     CSCursorDefinition link = {1,image,24,24,5,6};
@@ -57,8 +72,26 @@ int main(void) {
     assert(CSHasAppliedCursors());
     failuresRemaining = 0;
     assert(CSRestorePointer() == 0 && !CSHasAppliedCursors());
+    // Simulate a crashed old process, then a new process capturing its custom
+    // pointer as "original". System Default must not replay that snapshot.
+    assert(CSApplyCursors(&pointer,1) == 0);
+    releaseSaved();
+    assert(!CSHasAppliedCursors() && registry[0].size.width == 32);
+    assert(CSApplyCursors(&pointer,1) == 0);
+    assert(saved[0].size.width == 32);
+    missing[0] = true;
+    assert(CSRestoreSystemDefaults() != 0 && CSHasAppliedCursors());
+    missing[0] = false;
+    assert(CSRestoreSystemDefaults() == 0 && !CSHasAppliedCursors());
+    assert(registry[0].size.width == 20);
+    int previousResets = nativeResets;
+    assert(CSRestoreSystemDefaults() == 0 && nativeResets == previousResets + 1);
+    accessibilityColors = true;
+    assert(CSRestoreSystemDefaults() == 0 && accessibilityRegistrations == 1);
+    resetNativeCursors = NULL;
+    assert(CSRestoreSystemDefaults() == -1);
     for (size_t i = 0; i < SLOT_COUNT; i++) { assert(registry[i].size.width == 20); CFRelease(registry[i].images); }
     CFRelease(original); CGImageRelease(image); CGContextRelease(context); CGColorSpaceRelease(space);
-    puts("Cursor transactions: PASS (preflight, rollback, failed rollback, recovery retry)");
+    puts("Cursor transactions: PASS (rollback, recovery retry, stale originals, idle reset, Accessibility colors)");
     return 0;
 }

@@ -43,7 +43,7 @@ cp LICENSE "$app_path/Contents/Resources/LICENSE.txt"
 ditto --norsrc Sources/CursorStudio/Resources/SoftBloom "$app_path/Contents/Resources/SoftBloom"
 ditto --norsrc Sources/CursorStudio/Resources/Collection "$app_path/Contents/Resources/Collection"
 swift scripts/make-icon.swift "$staging_dir/AppIcon.iconset"
-iconutil --convert icns "$staging_dir/AppIcon.iconset" --output "$app_path/Contents/Resources/AppIcon.icns"
+iconutil --convert icns "$staging_dir/AppIcon.iconset" --output "$app_path/Contents/Resources/CuteCursorBloom.icns"
 xattr -cr "$app_path"
 asset_name="Cute-Cursor-macOS-dev"
 if $release; then
@@ -78,9 +78,14 @@ if $install_app; then
         [[ "$existing_id" == "com.vigneshkae.cutecursor" ]] || { print -u2 "Another app already uses this name."; exit 1; }
     fi
     mkdir -p "$HOME/Applications"
-    ditto --norsrc "$app_path" "$destination"
-    xattr -cr "$destination"
+    # Replace the whole bundle so renamed resources do not survive an upgrade.
+    if [[ -e "$destination" ]]; then mv "$destination" "$staging_dir/Previous Cute Cursor.app"; fi
+    if ! mv "$app_path" "$destination"; then
+        if [[ -e "$staging_dir/Previous Cute Cursor.app" ]]; then mv "$staging_dir/Previous Cute Cursor.app" "$destination"; fi
+        exit 1
+    fi
     codesign --verify --deep --strict "$destination"
+    /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f "$destination" || true
     print "Installed: $destination"
 fi
 print "Built: $(pwd)/dist/$asset_name.dmg"

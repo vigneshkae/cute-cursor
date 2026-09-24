@@ -14,6 +14,12 @@ static ConnectionFunction connection;
 static RegisterFunction registerCursor;
 static ResetFunction resetCursor;
 static CopyFunction copyCursor;
+typedef void (*NativeResetFunction)(void);
+typedef bool (*NativeRegisterFunction)(void);
+typedef bool (*CursorOverrideFunction)(void);
+static NativeResetFunction resetNativeCursors;
+static NativeRegisterFunction registerAccessibilityCursors;
+static CursorOverrideFunction usesAccessibilityCursors;
 static pthread_once_t once = PTHREAD_ONCE_INIT;
 // Identifiers verified against the local system registry. Numeric names are
 // macOS CoreCursor IDs (not Carbon ThemeCursor constants).
@@ -47,12 +53,19 @@ static void resolve(void) {
     if (services) {
         if (!resetCursor) resetCursor = (ResetFunction)dlsym(services, "CoreCursorUnregisterAll");
         copyCursor = (CopyFunction)dlsym(services, "CGSCopyRegisteredCursorImages");
+        usesAccessibilityCursors = (CursorOverrideFunction)dlsym(services, "_AXInterfaceCursorIsOverridden");
+    }
+    void *accessibility = dlopen("/System/Library/PrivateFrameworks/AccessibilitySupport.framework/Versions/A/Frameworks/AccessibilityFoundation.framework/AccessibilityFoundation", RTLD_LAZY | RTLD_LOCAL);
+    if (accessibility) {
+        resetNativeCursors = (NativeResetFunction)dlsym(accessibility, "AXFCursorUnregisterAll");
+        registerAccessibilityCursors = (NativeRegisterFunction)dlsym(accessibility, "AXFCursorRegisterAll");
     }
 }
 
 bool CSSystemAvailable(void) {
     pthread_once(&once, resolve);
-    return connection && registerCursor && resetCursor && copyCursor;
+    return connection && registerCursor && resetCursor && copyCursor &&
+        resetNativeCursors && registerAccessibilityCursors && usesAccessibilityCursors;
 }
 
 static void releaseSaved(void) {
@@ -176,4 +189,29 @@ int32_t CSRestorePointer(void) {
     }
     if (firstError == 0 && resetResult == 0) releaseSaved();
     return firstError == 0 ? resetResult : firstError;
+}
+
+int32_t CSRestoreSystemDefaults(void) {
+    if (!CSSystemAvailable() || !resetNativeCursors || !usesAccessibilityCursors) return -1;
+    bool accessibilityColors = usesAccessibilityCursors();
+    if (accessibilityColors && !registerAccessibilityCursors) return -1;
+    CGError result = resetCursor(connection());
+    if (result) return result;
+    // CoreCursorUnregisterAll only clears numeric slots. Apple's AX reset also
+    // recreates Arrow/ArrowS and IBeam/IBeamS from OS resources. A snapshot can
+    // already contain another process's custom cursor, so it is not a default.
+    resetNativeCursors();
+    // Respect the user's Accessibility colors without changing preferences.
+    if (accessibilityColors && !registerAccessibilityCursors()) return -5;
+    const size_t required[] = {0, 1, 3, 4};
+    for (size_t n = 0; n < sizeof(required) / sizeof(required[0]); n++) {
+        SavedCursor cursor = {0};
+        result = copyCursor(connection(), names[required[n]], &cursor.size, &cursor.point,
+                            &cursor.frames, &cursor.duration, &cursor.images);
+        bool valid = result == 0 && cursor.images && CFArrayGetCount(cursor.images) > 0;
+        if (cursor.images) CFRelease(cursor.images);
+        if (!valid) return result ? result : -5;
+    }
+    releaseSaved();
+    return 0;
 }

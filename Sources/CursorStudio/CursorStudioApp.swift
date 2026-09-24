@@ -47,13 +47,20 @@ struct StudioMenu: View {
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var pendingURLs: [URL] = []
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        if let name = Bundle.main.object(forInfoDictionaryKey: "CFBundleIconFile") as? String,
+           let url = Bundle.main.url(forResource: name, withExtension: "icns"),
+           let icon = NSImage(contentsOf: url) {
+            NSApp.applicationIconImage = icon
+        }
+    }
     weak var store: CursorStore? {
         didSet {
             if let store, !pendingURLs.isEmpty { let urls = pendingURLs; pendingURLs = []; store.importFiles(urls) }
         }
     }
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
-        store?.restore()
+        if store?.hasActiveCursors == true { store?.restore() }
         if store?.hasActiveCursors == true {
             let alert = NSAlert()
             alert.messageText = "The default pointer couldn’t be restored"

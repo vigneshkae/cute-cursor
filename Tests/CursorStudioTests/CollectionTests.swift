@@ -104,7 +104,18 @@ final class CollectionTests: XCTestCase {
         XCTAssertEqual(store.items, originalItems)
         XCTAssertEqual(store.packs, originalPacks)
         store.restore()
-        XCTAssertEqual(restores, 2, "No registry operation is needed when already restored")
+        XCTAssertEqual(restores, 3, "Always clear overrides, including those left by another process")
+    }
+
+    @MainActor
+    func testSystemDefaultCallsBackendWithoutAnActiveSelection() throws {
+        var restores = 0
+        let store = CursorStore(directory: try directory(), restoreSystemCursors: { restores += 1; return -5 })
+        XCTAssertFalse(store.hasActiveCursors)
+        store.restore()
+        XCTAssertEqual(restores, 1)
+        XCTAssertTrue(store.needsRestore)
+        XCTAssertNotNil(store.error)
     }
 
     @MainActor

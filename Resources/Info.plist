@@ -6,9 +6,9 @@
 <key>CFBundleName</key><string>Cute Cursor</string>
 <key>CFBundleDisplayName</key><string>Cute Cursor</string>
 <key>CFBundlePackageType</key><string>APPL</string>
-<key>CFBundleIconFile</key><string>AppIcon</string>
-<key>CFBundleShortVersionString</key><string>0.3.0</string>
-<key>CFBundleVersion</key><string>5</string>
+<key>CFBundleIconFile</key><string>CuteCursorBloom</string>
+<key>CFBundleShortVersionString</key><string>0.3.1</string>
+<key>CFBundleVersion</key><string>6</string>
 <key>LSMinimumSystemVersion</key><string>14.0</string>
 <key>NSHighResolutionCapable</key><true/>
 <key>NSHumanReadableCopyright</key><string>Copyright © 2026 Vignesh Kumar. MIT License.</string>

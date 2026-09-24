@@ -2,7 +2,7 @@
 
 ## Current release status
 
-0.3.0 (5), the Mac collection beta, has passed Developer ID signing and Apple notarization.
+0.3.1 (6), the Mac icon and reset fix, has passed Developer ID signing and Apple notarization.
 Both the app and DMG carry validated tickets and pass Gatekeeper assessment.
 Development builds remain ad-hoc signed. Each new release build must pass signing
 and notarization again before being described as notarized.
@@ -14,7 +14,12 @@ The maintainer supplied 20 individual cursor options and approved proceeding
 with those, replacing the earlier plan to wait for 25. These are bundled in
 `Resources/Collection`, with curated names and the supplied click points.
 The Mac app now uses the same Soft Bloom image for its icon and header logo.
-System Default restores the native cursors and clears the custom preview.
+Version 0.3.1 fixes a restore bug in 0.3.0: a leftover custom cursor could be
+captured as an "original," and an idle app skipped the reset entirely. System
+Default now asks macOS to recreate native images independently of saved snapshots.
+Rollback still uses snapshots. The app also explicitly loads its bundled flower
+icon, uses a new icon resource name, and replaces the full bundle when installed
+by the build script to avoid retaining obsolete signed resources.
 
 The maintainer confirmed that “40” means the existing visual size: **40 logical
 points** on Mac (80 device pixels at 2× Retina scale), not 40 physical pixels.
