@@ -10,22 +10,20 @@
 
 ### Pending final design change
 
-- Replace the **Cute Cursor header wordmark** font with a cute open-source font
+- Replace the **Cute Cursor header wordmark** font with a cute open-source handwritten font
   that suits the yellow-and-sage Soft Bloom theme. Font selection is pending;
   no font change has been applied yet.
-- Shortlist: Fredoka Medium (rounded and playful), Fraunces SemiBold (soft,
-  vintage character), Quicksand SemiBold (light and friendly), Comfortaa Bold
-  (rounded geometric letters), and Baloo 2 SemiBold (bold and bubbly).
-- Initial recommendation: Fredoka Medium for a playful logo; Fraunces SemiBold
-  for a more botanical, elegant direction. These are design suggestions, not an
-  approved selection.
+- The user clarified that the desired direction is handwritten. Revised
+  shortlist: Caveat SemiBold (natural and expressive), Patrick Hand (neat and
+  friendly), Handlee (delicate and casual), and Kalam (a lively pen-drawn feel).
+- Recommendation: Caveat SemiBold with the flower mark. This is a design
+  suggestion, not an approved font selection.
 - Each shortlisted family uses SIL OFL 1.1. If bundled, retain its copyright
   notice and OFL license alongside the app's separate MIT license. Sources:
-  [Fredoka](https://github.com/google/fonts/blob/main/ofl/fredoka/OFL.txt),
-  [Fraunces](https://github.com/google/fonts/blob/main/ofl/fraunces/OFL.txt),
-  [Quicksand](https://github.com/google/fonts/blob/main/ofl/quicksand/OFL.txt),
-  [Comfortaa](https://github.com/googlefonts/comfortaa),
-  [Baloo 2](https://github.com/google/fonts/blob/main/ofl/baloo2/OFL.txt).
+  [Caveat](https://github.com/google/fonts/blob/main/ofl/caveat/OFL.txt),
+  [Patrick Hand](https://github.com/google/fonts/blob/main/ofl/patrickhand/OFL.txt),
+  [Handlee](https://github.com/google/fonts/blob/main/ofl/handlee/OFL.txt),
+  [Kalam](https://github.com/google/fonts/blob/main/ofl/kalam/OFL.txt).
 
 ## 0.3.1 (6) — Mac icon and reset fix
 
