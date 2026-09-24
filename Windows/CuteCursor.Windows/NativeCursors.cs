@@ -65,7 +65,7 @@ public sealed class NativeCursors : ICursorBackend
         if (!SetSystemCursor(copy, systemId)) throw new Win32Exception(Marshal.GetLastWin32Error());
         GC.KeepAlive(handle);
     }
-    public static void ReloadConfiguredScheme()
+    public void ReloadConfiguredScheme()
     {
         if (!SystemParametersInfoW(0x57, 0, IntPtr.Zero, 0)) throw new Win32Exception(Marshal.GetLastWin32Error());
     }

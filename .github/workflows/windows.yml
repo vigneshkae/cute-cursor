@@ -31,11 +31,15 @@ jobs:
       - name: Render Windows interface in an isolated library
         shell: pwsh
         run: |
-          dotnet Windows/CuteCursor.Windows/bin/Release/net10.0-windows/CuteCursor.dll --screenshot "$env:RUNNER_TEMP/windows-soft-bloom.png"
-          if ($LASTEXITCODE -ne 0 -or !(Test-Path "$env:RUNNER_TEMP/windows-soft-bloom.png")) {
-            if (Test-Path "$env:TEMP/CuteCursor-test-error.txt") { Get-Content "$env:TEMP/CuteCursor-test-error.txt" }
-            throw "Windows UI render failed."
+          foreach ($view in @('cursors', 'packs', 'default')) {
+            dotnet Windows/CuteCursor.Windows/bin/Release/net10.0-windows/CuteCursor.dll --screenshot "$env:RUNNER_TEMP/windows-$view.png" --view $view
+            if ($LASTEXITCODE -ne 0 -or !(Test-Path "$env:RUNNER_TEMP/windows-$view.png")) {
+              if (Test-Path "$env:TEMP/CuteCursor-test-error.txt") { Get-Content "$env:TEMP/CuteCursor-test-error.txt" }
+              throw "Windows UI render failed."
+            }
           }
+          dotnet Windows/CuteCursor.Windows/bin/Release/net10.0-windows/CuteCursor.dll --screenshot "$env:RUNNER_TEMP/windows-compact.png" --view packs --compact
+          if ($LASTEXITCODE -ne 0) { throw "Compact UI render failed." }
       - name: Build self-contained x64 development package (no upload)
         run: ./scripts/build-windows.ps1 -Runtime win-x64
       - name: Smoke test the packaged x64 executable (no system replacement)
@@ -54,15 +58,15 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: windows-ui-preview
-          path: ${{ runner.temp }}/windows-soft-bloom.png
+          path: ${{ runner.temp }}/windows-*.png
           retention-days: 7
-      - name: Save private test packages for release preparation
-        if: startsWith(github.ref, 'refs/tags/private-test-')
+      - name: Save test packages for release preparation
+        if: github.ref == 'refs/heads/codex/windows' || startsWith(github.ref, 'refs/tags/windows-')
         uses: actions/upload-artifact@v4
         with:
-          name: windows-private-test-packages
+          name: windows-test-packages
           path: |
-            dist/CuteCursor-windows-preview-*.zip
-            dist/CuteCursor-windows-preview-*.zip.sha256
+            dist/Cute-Cursor-Windows-*.zip
+            dist/Cute-Cursor-Windows-*.zip.sha256
           if-no-files-found: error
           retention-days: 7

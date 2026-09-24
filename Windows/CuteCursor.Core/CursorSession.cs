@@ -8,6 +8,7 @@ public interface ICursorBackend
     ICursorImage Create(CursorSlot slot, double scale);
     // Install must copy the supplied handle: ownership stays with the caller.
     void Install(ICursorImage image, uint systemId);
+    void ReloadConfiguredScheme();
 }
 
 public sealed class CursorSession(ICursorBackend backend)
@@ -65,6 +66,15 @@ public sealed class CursorSession(ICursorBackend backend)
         if (errors.Count != 0)
             throw new AggregateException("Some cursors could not be restored. Keep the app open and retry Restore.", errors);
         Release(originals); originals = null;
+    }
+
+    public void RestoreSystemDefaults()
+    {
+        // Always ask Windows to reload its configured scheme. Captured handles
+        // can contain custom cursors left by an older process or another app.
+        // Keep recovery snapshots alive if the native reset fails.
+        backend.ReloadConfiguredScheme();
+        if (originals is not null) { Release(originals); originals = null; }
     }
 
     private List<Exception> InstallAll(Dictionary<uint, ICursorImage> images)

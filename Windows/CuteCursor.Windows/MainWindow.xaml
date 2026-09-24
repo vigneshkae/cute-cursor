@@ -3,14 +3,15 @@
     <Grid.RowDefinitions><RowDefinition Height="80"/><RowDefinition Height="*"/><RowDefinition Height="82"/></Grid.RowDefinitions>
     <Border BorderBrush="{StaticResource Line}" BorderThickness="0,0,0,1" Padding="24,14"><DockPanel>
       <StackPanel Orientation="Horizontal" DockPanel.Dock="Right"><Button Content="＋ New pack" Click="NewPack" Margin="0,0,8,0"/><Button Content="Import…" Click="ImportFiles" Margin="0,0,8,0"/><Button Content="Help" Click="Help"/></StackPanel>
-      <StackPanel Orientation="Horizontal"><Image Source="Assets/flower.png" Width="43" Height="48" Margin="0,0,12,0"/><StackPanel VerticalAlignment="Center"><TextBlock Text="Cute Cursor" FontSize="23" FontWeight="SemiBold"/><TextBlock Text="A little bloom for your everyday clicks." Foreground="{StaticResource Muted}" FontSize="12"/></StackPanel></StackPanel>
+      <StackPanel Orientation="Horizontal"><Image Source="Assets/flower.png" Width="40" Height="40" Margin="0,0,12,0"/><TextBlock Text="Cute Cursor" FontSize="23" FontWeight="SemiBold"/></StackPanel>
     </DockPanel></Border>
     <Grid Grid.Row="1" Margin="24,20,24,12"><Grid.ColumnDefinitions><ColumnDefinition Width="256"/><ColumnDefinition Width="24"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-      <Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-        <Grid Margin="0,0,0,14"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions><Button x:Name="PacksTab" Content="Packs" Click="ShowPacks" Margin="0,0,4,0"/><Button x:Name="CursorsTab" Grid.Column="1" Content="Cursors" Click="ShowCursors" Margin="4,0,0,0"/></Grid>
+      <Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+        <Grid Margin="0,0,0,14"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions><Button x:Name="CursorsTab" Content="Cursors" Click="ShowCursors" Margin="0,0,4,0"/><Button x:Name="PacksTab" Grid.Column="1" Content="Packs" Click="ShowPacks" Margin="4,0,0,0"/></Grid>
         <Grid Grid.Row="1" Margin="0,0,0,12"><TextBox x:Name="Search" TextChanged="SearchChanged" ToolTip="Search your library" AutomationProperties.Name="Search library"/><TextBlock Text="Search library…" Margin="12,0" Foreground="{StaticResource Muted}" IsHitTestVisible="False"><TextBlock.Style><Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding Text, ElementName=Search}" Value=""><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock></Grid>
-        <ListBox x:Name="LibraryList" Grid.Row="2" SelectionChanged="LibrarySelectionChanged" AutomationProperties.Name="Cursor library"/>
-        <TextBlock Grid.Row="3" Text="Drop images or a .cutecursor pack here.&#x0a;Transparent PNGs work best." FontSize="12" Foreground="{StaticResource Muted}" Margin="2,10,0,0" TextWrapping="Wrap"/>
+        <Button x:Name="SystemDefaultButton" Grid.Row="2" Click="Restore" HorizontalContentAlignment="Left" Margin="0,0,0,10" AutomationProperties.Name="System Default"><StackPanel><TextBlock Text="System Default" FontWeight="SemiBold"/><TextBlock Text="Your Windows cursors" FontSize="12" Foreground="{StaticResource Muted}" Margin="0,3,0,0"/></StackPanel></Button>
+        <ListBox x:Name="LibraryList" Grid.Row="3" SelectionChanged="LibrarySelectionChanged" AutomationProperties.Name="Cursor library"/>
+        <TextBlock Grid.Row="4" Text="Drop images or a .cutecursor pack here.&#x0a;Transparent PNGs work best." FontSize="12" Foreground="{StaticResource Muted}" Margin="2,10,0,0" TextWrapping="Wrap"/>
       </Grid>
       <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,10,0">
         <StackPanel>
@@ -35,7 +36,7 @@
       </ScrollViewer>
     </Grid>
     <Border Grid.Row="2" BorderBrush="{StaticResource Line}" BorderThickness="0,1,0,0" Padding="24,14"><DockPanel>
-      <StackPanel DockPanel.Dock="Right" Orientation="Horizontal"><Button x:Name="RestoreButton" Content="Restore" Click="Restore" Margin="0,0,10,0"/><Button x:Name="ApplyButton" Content="Apply pack ↗" Style="{StaticResource Primary}" Click="Apply" MinWidth="145"/></StackPanel>
+      <StackPanel DockPanel.Dock="Right" Orientation="Horizontal"><Button x:Name="RestoreButton" Content="System Default" Click="Restore" Margin="0,0,10,0"/><Button x:Name="ApplyButton" Content="Apply cursor ↗" Style="{StaticResource Primary}" Click="Apply" MinWidth="145"/></StackPanel>
       <StackPanel VerticalAlignment="Center" Margin="0,0,20,0"><TextBlock x:Name="Status" Text="Ready when you are." TextWrapping="Wrap" FontWeight="SemiBold" AutomationProperties.LiveSetting="Polite"/><TextBlock Text="System-wide on Windows · some apps use their own cursors" FontSize="12" Foreground="{StaticResource Muted}" Margin="0,4,0,0"/></StackPanel>
     </DockPanel></Border>
   </Grid>

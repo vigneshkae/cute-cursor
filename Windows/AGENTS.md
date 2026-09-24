@@ -8,5 +8,9 @@
 - Never run SetSystemCursor in CI. Use fake-backend tests for apply/rollback/restore.
 - Preserve the original cursor handles until restoration succeeds. Don't write cursor registry settings.
 - Grab and grabbing are preview-only Windows roles; never map them to unrelated system slots.
+- The 20-item collection is embedded from the shared Mac catalog and PNGs; seed
+  once and preserve user edits/deletions. New cursors default to visual size 40.
+- System Default reloads the configured Windows scheme even with no active
+  session; keep rollback/exit snapshots until restoration succeeds.
 - Default pack data is linked from `Examples/Soft-Bloom.cutecursor`; don't duplicate the Mac PNGs.
 - No final release, installer upload, code signing, or main-branch merge without user direction.

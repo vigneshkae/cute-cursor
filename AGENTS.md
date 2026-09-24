@@ -21,4 +21,5 @@ Code and original bundled artwork are MIT licensed.
 - Portable pack schema is documented in docs/PACK_FORMAT.md; validate the entire
   pack before writes. Pack settings must not mutate library items.
 - Windows is implemented separately under `Windows/`; read `Windows/AGENTS.md`.
-- No public installer releases yet. Do not add fake download links or binaries.
+- Mac notarized betas are published on GitHub. Windows remains an unsigned testing
+  beta. Never commit installers or describe Windows previews as signed releases.

@@ -13,7 +13,7 @@ public partial class MainWindow : Window
     private readonly CursorSession session = new(new NativeCursors());
     private readonly string recoveryPath;
     private readonly bool automation;
-    private bool packMode = true, updating, exiting, recoveryPending;
+    private bool packMode, updating, exiting, recoveryPending;
     private Guid? selectedId;
     private string selectedRole = "pointer";
     private CursorHandle? previewHandle;
@@ -32,7 +32,7 @@ public partial class MainWindow : Window
         recoveryPath = Path.Combine(directory, "active-session.txt");
         recoveryPending = File.Exists(recoveryPath);
         InitializeComponent();
-        selectedId = library.State.Packs.FirstOrDefault()?.Id;
+        selectedId = library.State.Cursors.FirstOrDefault()?.Id;
         if (!automation)
         {
             tray = new System.Windows.Forms.NotifyIcon { Text = "Cute Cursor", Icon = System.Drawing.Icon.ExtractAssociatedIcon(Environment.ProcessPath!) ?? System.Drawing.SystemIcons.Application, Visible = true };
@@ -43,7 +43,7 @@ public partial class MainWindow : Window
                 Renderer = new System.Windows.Forms.ToolStripProfessionalRenderer(new BloomTrayColors())
             };
             menu.Items.Add("Open Cute Cursor", null, (_, _) => OpenWindow());
-            menu.Items.Add("Restore cursors", null, (_, _) => Run(RestoreCursors));
+            menu.Items.Add("System Default", null, (_, _) => Run(RestoreCursors));
             menu.Items.Add("Exit Cute Cursor", null, (_, _) => TryExit());
             tray.ContextMenuStrip = menu;
             tray.DoubleClick += (_, _) => OpenWindow();
@@ -62,15 +62,39 @@ public partial class MainWindow : Window
         DpiChanged += (_, _) => Run(RefreshArtwork);
     }
     private void OpenWindow() { Show(); WindowState = WindowState.Normal; Activate(); }
+    internal void ConfigureReview(string view)
+    {
+        if (!automation) throw new InvalidOperationException("Review states require an isolated test library.");
+        switch (view)
+        {
+            case "cursors": packMode = false; selectedId = library.State.Cursors.FirstOrDefault()?.Id; break;
+            case "packs": packMode = true; selectedId = library.State.Packs.FirstOrDefault()?.Id; break;
+            case "default": ShowSystemDefaultSelection(); return;
+            default: throw new ArgumentException("Unknown review view.");
+        }
+        RebuildLibrary(); RefreshEditor();
+    }
+    internal void VerifyInterfaceDefaults()
+    {
+        ConfigureReview("cursors");
+        if (LibraryList.Items.Count != 20 || SelectedSlot?.Size != 40 || SystemDefaultButton.Visibility != Visibility.Visible)
+            throw new Exception("The cursor library defaults are incorrect.");
+        ConfigureReview("packs");
+        if (RoleGrid.Children.Count != 11 || SelectedPack?.Pack.Cursors.Any(c => c.Size != 40) != false)
+            throw new Exception("The pack defaults are incorrect.");
+        ConfigureReview("default");
+        if (Details.Visibility != Visibility.Collapsed || ApplyButton.IsEnabled || previewCursor is not null || TestPad.Cursor is not null || selectedId is not null)
+            throw new Exception("System Default kept a custom preview or selection.");
+    }
     public bool TryExit()
     {
-        try { RestoreCursors(); }
+        try { RestoreOnExit(); }
         catch (Exception ex) { BloomDialog.Message(this, "Restore needs another try", ex.Message); return false; }
         exiting = true; Close(); Application.Current.Shutdown(); return true;
     }
     public bool RestoreForShutdown()
     {
-        try { RestoreCursors(); return true; } catch { return false; }
+        try { RestoreOnExit(); return true; } catch { return false; }
     }
     private void WindowClosing(object? sender, CancelEventArgs e)
     {
@@ -91,6 +115,8 @@ public partial class MainWindow : Window
             LibraryList.Items.Clear();
             PacksTab.Background = (Brush)FindResource(packMode ? "Yellow" : "Paper");
             CursorsTab.Background = (Brush)FindResource(packMode ? "Paper" : "Yellow");
+            SystemDefaultButton.Visibility = packMode ? Visibility.Collapsed : Visibility.Visible;
+            SystemDefaultButton.Background = (Brush)FindResource(!packMode && selectedId is null ? "Yellow" : "Paper");
             var query = Search.Text.Trim();
             if (packMode)
             {
@@ -98,7 +124,7 @@ public partial class MainWindow : Window
                     AddLibraryRow(p.Id, p.Pack.Name, $"{p.Pack.Cursors.Count} of 11 roles", p.Pack.Cursors.FirstOrDefault(c => c.Role == "pointer") ?? p.Pack.Cursors.FirstOrDefault(), false);
             }
             else foreach (var c in library.State.Cursors.OrderByDescending(c => c.Favorite).Where(c => c.Image.Name.Contains(query, StringComparison.OrdinalIgnoreCase)))
-                AddLibraryRow(c.Id, c.Image.Name, "Your image · PNG", c.Image, c.Favorite);
+                AddLibraryRow(c.Id, c.Image.Name, "Cursor · PNG", c.Image, c.Favorite);
         }
         finally { updating = false; }
     }
@@ -128,13 +154,16 @@ public partial class MainWindow : Window
             var pack = SelectionPack;
             Details.Visibility = pack is null ? Visibility.Collapsed : Visibility.Visible;
             EmptyState.Visibility = pack is null ? Visibility.Visible : Visibility.Collapsed;
+            EmptyState.Text = !packMode && selectedId is null
+                ? "System Default\n\nYour Windows cursor scheme, with your system size and colors. Choose a cursor from the library whenever you want a change."
+                : "Start with an image or create a pack.\nUse Import above to add a cursor.";
             ApplyButton.IsEnabled = pack?.Cursors.Any(c => Roles.SystemIds.ContainsKey(c.Role)) == true;
             ApplyButton.Content = packMode ? "Apply pack ↗" : "Apply cursor ↗";
             RoleGrid.Visibility = packMode ? Visibility.Visible : Visibility.Collapsed;
             RoleGrid.Children.Clear();
-            if (pack is null) { ClearPreview(); return; }
+            if (pack is null) { ClearPreview(); Art.Source = null; return; }
             SelectionTitle.Text = packMode ? pack.Name : SelectedCursor!.Image.Name;
-            SelectionSubtitle.Text = packMode ? "11 shareable roles · 9 system roles on Windows · grab & grabbing are preview-only" : "Your image, your everyday pointer. Changes stay in your library.";
+            SelectionSubtitle.Text = packMode ? "11 cursor roles · Grab and Grabbing preview inside the app." : "Your image, your everyday pointer. Changes stay in your library.";
             if (packMode)
                 foreach (var role in Roles.All)
                 {
@@ -293,14 +322,27 @@ public partial class MainWindow : Window
         using (var file = new FileStream(recoveryPath, FileMode.Create, FileAccess.Write, FileShare.None)) { file.Write("Restore the configured Windows cursor scheme after an interrupted session."u8); file.Flush(true); }
         try { session.Apply(pack, VisualTreeHelper.GetDpi(this).DpiScaleX); }
         finally { if (!session.HasChanges && File.Exists(recoveryPath)) File.Delete(recoveryPath); }
-        Status.Text = $"{pack.Name} is applied. Exit or Restore brings back your previous cursors.";
+        Status.Text = $"{pack.Name} is applied. System Default restores your Windows cursor scheme.";
     });
     private void RestoreCursors()
     {
         if (automation) return;
-        if (recoveryPending) NativeCursors.ReloadConfiguredScheme(); else session.Restore();
+        session.RestoreSystemDefaults();
         if (File.Exists(recoveryPath)) File.Delete(recoveryPath);
-        recoveryPending = false; Status.Text = "Your previous cursors are restored.";
+        recoveryPending = false;
+        ShowSystemDefaultSelection();
+    }
+    private void ShowSystemDefaultSelection()
+    {
+        selectedId = null; packMode = false; Search.Text = "";
+        RebuildLibrary(); RefreshEditor(); Status.Text = "System default cursors restored.";
+    }
+    private void RestoreOnExit()
+    {
+        if (automation) return;
+        if (recoveryPending) { RestoreCursors(); return; }
+        session.Restore();
+        if (File.Exists(recoveryPath)) File.Delete(recoveryPath);
     }
     private void Restore(object sender, RoutedEventArgs e) => Run(RestoreCursors);
     private void Help(object sender, RoutedEventArgs e) => BloomDialog.Message(this, "A little help", "Import an image, or choose a role in a pack. Set its size and click point, then Apply. Soft Bloom starts at size 40 (40 pixels at 100% display scale).\n\nPacks work on Mac and Windows. Windows supports nine system roles; Grab and Grabbing stay available for preview and sharing. Some apps draw their own cursors.\n\nClosing this window keeps Cute Cursor in the system tray. Choose Exit there to restore your originals. No administrator access is needed.\n\nTransparent PNGs work best. GIFs and other multi-frame images use the first frame. Native file pickers retain the Windows appearance.");

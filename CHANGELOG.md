@@ -1,5 +1,17 @@
 # Changes
 
+## Windows 0.3.2 beta — collection and system-default parity
+
+- Bundle the same 20 cursor choices as Mac, with approved Ancestor and No Smoking names.
+- Seed the collection once, preserving existing edits, favorites and deletions.
+- Keep the current app font; handwritten alternatives were not selected.
+- Match the Soft Bloom app icon and unboxed header logo.
+- Open Cursors first and expose System Default in the library, footer and tray.
+- Reload the configured Windows cursor scheme rather than replaying stale originals.
+- Start new cursors and all default pack roles at visual size 40, respecting display scaling.
+- Verify actual x64/ARM64 executable headers when packaging self-contained test ZIPs.
+
+
 ## Unreleased — Windows source preview (`codex/windows`)
 
 - Add a native .NET 10 / WPF Windows app with the Soft Bloom theme and all 11

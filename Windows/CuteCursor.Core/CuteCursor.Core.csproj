@@ -1,1 +1,6 @@
-<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><TargetFramework>net10.0</TargetFramework></PropertyGroup></Project>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><TargetFramework>net10.0</TargetFramework></PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="../../Sources/CursorStudio/Resources/Collection/*" LogicalName="Collection.%(Filename)%(Extension)" />
+  </ItemGroup>
+</Project>

@@ -10,7 +10,9 @@ public static class NativeSmokeTests
         var pack = PackCodec.Read(App.BundledPack(), ImageCodec.Validate);
         if (pack.Cursors.Count != 11 || pack.Cursors.Any(c => c.Size != 40)) throw new Exception("Soft Bloom defaults changed.");
         var backend = new NativeCursors();
-        foreach (var slot in pack.Cursors)
+        var collection = BundledCollection.Load(ImageCodec.Validate);
+        if (collection.Count != 20 || collection.Any(c => c.Image.Size != 40)) throw new Exception("Collection defaults changed.");
+        foreach (var slot in pack.Cursors.Concat(collection.Select(c => c.Image)))
             foreach (double scale in new[] { 1, 1.25, 1.5, 2.0 })
             {
                 using var handle = (CursorHandle)backend.Create(slot, scale);
@@ -29,6 +31,9 @@ public static class NativeSmokeTests
         Directory.CreateDirectory(directory);
         try
         {
+            var window = new MainWindow(Path.Combine(directory, "ui-library"), automation: true);
+            try { window.VerifyInterfaceDefaults(); }
+            finally { window.Close(); }
             var pixels = Enumerable.Repeat((byte)255, 640 * 320 * 4).ToArray();
             var source = BitmapSource.Create(640, 320, 300, 300, PixelFormats.Bgra32, null, pixels, 640 * 4);
             void Save(string path, BitmapEncoder encoder, BitmapSource bitmap)
@@ -48,6 +53,6 @@ public static class NativeSmokeTests
         }
         finally { Directory.Delete(directory, true); }
         var output = Environment.GetEnvironmentVariable("CUTE_CURSOR_SMOKE_RESULT");
-        if (output is not null) File.WriteAllText(output, JsonSerializer.Serialize(new { ok = true, nativeCursorsCreated = 44, imageFormatsImported = 5, systemCursorsChanged = 0 }));
+        if (output is not null) File.WriteAllText(output, JsonSerializer.Serialize(new { ok = true, bundledCursors = 20, nativeCursorsCreated = 124, imageFormatsImported = 5, interfaceDefaultsVerified = true, systemCursorsChanged = 0 }));
     }
 }

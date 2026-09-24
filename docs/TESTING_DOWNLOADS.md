@@ -1,61 +1,49 @@
-# Private Mac and Windows test downloads
+# Mac and Windows test downloads
 
-[Open the test release](https://github.com/vigneshkae/cute-cursor/releases/tag/private-test-2026-09-23.1)
-while signed into a GitHub account with access to this private repository.
-A private download link does not grant access by itself; an unauthorized visitor
-may see a 404 page.
+## Windows 0.3.2 beta
 
-These are development builds for testing, not a final public release. Mac source
-matches the `codex/mac-beta` checkpoint; Windows source is from `codex/windows`.
-The tag captures both implementations and the packaging workflow.
+Windows builds are prepared from `codex/windows` and published as GitHub Release
+assets. The repository is public. These portable packages are unsigned testing
+builds, not signed final installers.
 
-## MacBook
+- **Cute-Cursor-Windows-x64.zip**: Intel and AMD Windows PCs.
+- **Cute-Cursor-Windows-ARM64.zip**: Windows-on-ARM PCs.
 
-Download **Cute-Cursor-macOS-dev.dmg**, open it, and drag **Cute Cursor** to
-Applications. Quit the previous copy before replacing it. The build includes
-Apple Silicon and Intel code and targets macOS 14 or later. ARM64 has been tested
-locally; older macOS versions and Intel runtime behavior still need verification.
+Check Windows Settings → System → About → System type if unsure. Extract the
+whole ZIP and open **CuteCursor.exe**. Keep `LICENSE.txt` with it. No separate
+.NET installation, administrator access, or installer is required. Windows may
+show an unknown-publisher or reputation warning because these EXEs are unsigned.
+Initial testing targets Windows 11. Do not disable Windows security globally.
 
-A ZIP of the same app is also supplied as **Cute-Cursor-macOS-dev.zip**.
-The app is ad-hoc signed and **not notarized**. macOS may block the first launch;
-only approve a build downloaded from this repository after checking its source
-and checksum. The Developer ID certificate exists, but the expected
-`cute-cursor-notary` Keychain credential profile is not configured yet.
-Do not disable Gatekeeper globally.
+The packaging script validates each executable's actual PE architecture. CI
+launches the packaged x64 app, validates all 20 collection images and 11 pack
+roles, creates native cursor handles, and checks UI defaults without replacing
+live system cursors. ARM64 is cross-published and needs a native ARM64 PC test.
+Actual system-wide Apply/Restore behavior still needs interactive Windows testing.
 
-## Windows
+### What to test
 
-Download **CuteCursor-windows-preview-win-x64.zip** for most Intel/AMD Windows PCs.
-Use **CuteCursor-windows-preview-win-arm64.zip** for a Windows-on-ARM PC.
-Check Settings → System → About → System type if unsure.
+1. Cursors opens with 20 options, including **Ancestor** and **No Smoking**.
+2. Every new cursor and all 11 Soft Bloom roles start at visual size **40**.
+   At 150% display scaling, 40 logical units render as 60 physical pixels.
+3. Import a PNG, adjust its click point and size, and try the preview area.
+4. Apply a cursor or pack. Check pointer, link, text, resize, crosshair and
+   not-allowed roles outside Cute Cursor. Grab/Grabbing are preview-only.
+5. Click **System Default** in the library, footer or tray. The configured Windows
+   cursor scheme should return and the custom preview should clear.
+6. Apply again, close to the tray, reopen, and choose Exit. Previous cursors should
+   return. System Default also works after relaunch with no active selection.
+7. Rename, favorite or remove a cursor; relaunch and confirm the edit persists.
+   Existing libraries should gain the collection once without losing user edits.
+8. Export a pack and import it on Mac; compare sizes and click points.
 
-Extract the whole ZIP, then open **CuteCursor.exe**. Keep `LICENSE.txt` with it.
-The .NET runtime is bundled; no separate SDK or runtime installation is needed.
-No administrator access or installer is required. These EXEs are **unsigned**,
-so Windows may display a publisher or reputation warning. Do not disable Windows
-security globally. Initial testing targets Windows 11.
+Each ZIP has an adjacent `.sha256` file. Compare its hash with
+`Get-FileHash -Algorithm SHA256` in PowerShell. See [Windows details](WINDOWS.md)
+for recovery, supported image formats, display scaling and the full test matrix.
 
-The x64 packaged EXE passed native image and cursor-creation smoke tests in CI.
-ARM64 was cross-published; it still requires testing on actual ARM64 Windows.
+## Mac
 
-## What to test
-
-1. Start with Soft Bloom. All eleven slots should initially show size 40.
-2. Import a PNG, adjust its click point and size, and try the preview area.
-3. Apply the pack and check the pointer, link, text and resize cursors outside
-   Cute Cursor. Windows applies nine roles; grab/grabbing remain preview-only.
-4. Switch to a pointer-only selection and verify other roles return to normal.
-5. Use Restore, then apply again and choose Exit/Quit. Verify original cursors return.
-6. Rename and export a pack, import it on the other OS, and compare its settings.
-7. Relaunch and confirm edits remain. Closing the window keeps the app running
-   in the Mac menu bar or Windows system tray; Exit/Quit restores the cursors.
-
-Back up any important custom packs with Export before testing. Imported original
-image files are never changed. See `docs/WINDOWS.md` for Windows crash recovery
-and `docs/VALIDATION.md` for the current compatibility limits.
-
-## Verify the download
-
-Each release includes **SHA256SUMS.txt**. On Mac, run `shasum -a 256` on your
-chosen downloaded file; on Windows, run `Get-FileHash -Algorithm SHA256` in
-PowerShell. Compare the result with the corresponding line in the checksum file.
+Use the [notarized Mac 0.3.1 beta](https://github.com/vigneshkae/cute-cursor/releases/tag/v0.3.1-beta.1),
+not the older development-preview DMG. It includes Apple Silicon and Intel code;
+Intel runtime behavior and older macOS versions still need hands-on checks.
+The current Mac app/library can be renamed independently of that published build.

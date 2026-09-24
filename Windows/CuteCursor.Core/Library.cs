@@ -7,6 +7,7 @@ public sealed record LibraryState
 {
     public int Version { get; init; } = 1;
     public bool SoftBloomInstalled { get; init; }
+    public bool CollectionInstalled { get; init; }
     public List<SavedCursor> Cursors { get; init; } = [];
     public List<SavedPack> Packs { get; init; } = [];
 }
@@ -25,14 +26,26 @@ public sealed class Library
         State = File.Exists(path) ? JsonSerializer.Deserialize<LibraryState>(PackCodec.ReadFile(path, 128 * 1024 * 1024), PackCodec.Json)
             ?? throw new InvalidDataException("The saved library is empty.") : new();
         Validate(State);
+        // Validate both bundled sets before persisting an upgrade. The receipt
+        // prevents removed defaults from returning and preserves later edits.
+        var next = State;
         if (!State.SoftBloomInstalled)
         {
             var pack = PackCodec.Read(softBloom, decodeImage);
             pack = pack with { Cursors = pack.Cursors.Select(c => c with { Size = 40 }).ToList() };
             var packs = State.Packs.ToList();
             if (!packs.Any(p => p.Id == SoftBloomId)) packs.Insert(0, new(SoftBloomId, pack));
-            Save(State with { Packs = packs, SoftBloomInstalled = true });
+            next = next with { Packs = packs, SoftBloomInstalled = true };
         }
+        if (!State.CollectionInstalled)
+        {
+            var collection = BundledCollection.Load(decodeImage);
+            var cursors = next.Cursors.ToList();
+            foreach (var cursor in collection)
+                if (!cursors.Any(c => c.Id == cursor.Id)) cursors.Add(cursor);
+            next = next with { Cursors = cursors, CollectionInstalled = true };
+        }
+        if (!ReferenceEquals(next, State)) Save(next);
     }
     private void Validate(LibraryState state)
     {

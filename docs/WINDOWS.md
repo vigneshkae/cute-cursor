@@ -1,12 +1,12 @@
-# Cute Cursor for Windows — source preview
+# Cute Cursor for Windows — 0.3.2 testing beta
 
 The Windows implementation lives on `codex/windows`, separately from the Mac
-checkpoint on `codex/mac-beta`. It is a native WPF desktop app using .NET 10 and
+release branch `codex/mac-public-beta`. It is a native WPF desktop app using .NET 10 and
 documented Win32 cursor APIs. It shares the original artwork and version 1 pack
 format with the Mac app. No third-party runtime packages, accounts, administrator
 rights, or network connection are needed by the app.
 
-This is development source, not a signed public release. The initial target is
+This is an unsigned testing beta, not a signed final release. The initial target is
 Windows 11, x64 and ARM64. Actual system-wide behavior and accessibility still
 require hands-on Windows testing; a successful build is not that verification.
 
@@ -28,11 +28,14 @@ require hands-on Windows testing; a successful build is not that verification.
 4. **Automation and packaging — implemented.** Portable tests, Windows-native
    image/cursor creation checks, isolated UI rendering, self-contained x64/ARM64
    ZIP packaging. CI does not apply system cursors or publish installers.
-5. **Hands-on verification — pending.** Run the matrix below on Windows before
+5. **Collection parity — implemented.** The same 20 individual cursors as Mac,
+   including Ancestor and No Smoking, seeded once at size 40 without overwriting
+   existing edits. Matching flower icon and unboxed logo; current font retained.
+6. **Hands-on verification — pending.** Run the matrix below on Windows before
    treating this as a beta suitable for other people's machines.
-6. **Private test downloads — available.** See [installation instructions](TESTING_DOWNLOADS.md).
-7. **Public distribution — deferred.** Authenticode signing, an installer if
-   desired, downloaded-file checks, and GitHub Release assets come later.
+7. **Test downloads.** See [installation instructions](TESTING_DOWNLOADS.md).
+8. **Signed distribution — deferred.** Authenticode signing and an installer,
+   if desired, come after beta testing. Downloads are portable ZIP files.
 
 ## Build and run
 
@@ -56,14 +59,18 @@ To create local portable development packages:
 Extract the ZIP and open `CuteCursor.exe`. The runtime is bundled, so the packaged
 app does not require a separate .NET installation. WPF native libraries may be
 extracted by .NET at launch. These EXEs are unsigned development builds and may
-trigger Windows reputation warnings. Normal CI runs upload only a temporary UI review image. Explicit `private-test-`
-tags also retain development ZIPs for manual private prerelease uploads.
+trigger Windows reputation warnings. Builds on `codex/windows` retain temporary test ZIPs and UI review images.
+Publishing to GitHub Releases is a separate, manual step. Packaging validates
+the actual Windows PE architecture before creating each ZIP.
 
 The portable core tests also run on macOS with the .NET 10 SDK. The WPF project
 can be cross-compiled there, but running it requires Windows.
 
 ## Features and platform differences
 
+- The Cursors tab opens first with 20 bundled choices. New library cursors, new
+  imports, and initial pack slots use **size 40**. Imported pack settings and
+  existing user edits retain their authored sizes.
 - Soft Bloom is installed once, with all 11 roles at **size 40**. User renames,
   changed sizes, images and intentional deletions survive relaunch.
 - Size is the longest side in logical units: 40 becomes 40 pixels at 100% display
@@ -86,8 +93,13 @@ can be cross-compiled there, but running it requires Windows.
   be replaced through the standard global cursor roles.
 - Editing does not silently reapply. Click Apply again to use changed settings.
   A pointer-only selection restores other mapped roles to the captured originals.
+- **System Default** is available in the library, bottom bar, and tray menu. It
+  reloads the configured Windows scheme using `SPI_SETCURSORS`, even if this
+  process has no active selection. It clears the custom preview and selection.
+  Failed resets retain recovery handles. System size and colors are preserved;
+  the app does not rewrite the configured scheme.
 - Closing the window keeps the app running in the system tray. Tray **Exit**
-  restores the originals; **Restore** is also available in the fixed action bar.
+  restores captured originals; after crash recovery it reloads the system scheme.
   A second instance is prevented within the same Windows session.
 
 ## Recovery and storage
@@ -119,14 +131,17 @@ dotnet Windows/CuteCursor.Windows/bin/Release/net10.0-windows/CuteCursor.dll --s
 Get-Content $env:CUTE_CURSOR_SMOKE_RESULT
 ```
 
-The 27-test portable suite covers pack round trips and rejection, geometry, persisted
+The 34-test portable suite covers pack round trips and rejection, geometry, persisted
 favorites, independent edits, deleted defaults, corrupt storage, preflight,
-partial packs, apply rollback and restoration retries. A fake backend tracks
+partial packs, apply rollback, collection migration and restoration retries.
+System Default cases cover contaminated original snapshots, idle resets, and
+failed scheme reloads that preserve handles for retry. A fake backend tracks
 handle ownership and asserts that none leak after successful restoration.
 
-The native smoke check decodes the complete bundled pack, creates 44 cursor
+The native smoke check decodes all 20 bundled cursors and the complete pack, creates 124 cursor
 handles across four scale factors, verifies their native hotspots, and captures
-nine original handles. It also verifies five image import formats, size/aspect
+nine original handles. It verifies the initial library/pack defaults and cleared preview state.
+It also verifies five image import formats, size/aspect
 preservation, and rejection of transparent or corrupt images. It **never calls
 SetSystemCursor**. CI repeats it on the published x64 executable. The Windows workflow
 also renders the real WPF window with an isolated temporary library and builds
@@ -136,7 +151,7 @@ both architecture packages without distributing them.
 
 Run on an interactive Windows 11 x64 machine and a native ARM64 machine:
 
-- Fresh launch: Soft Bloom, all 11 slots at 40, readable controls at 100%, 150%,
+- Fresh launch: 20 individual cursors, Soft Bloom with all 11 slots at 40, readable controls at 100%, 150%,
   and 200% display scaling, minimum window size, keyboard navigation and screen reader.
 - Import transparent PNG and opaque JPEG; verify first-frame GIF behavior, corrupt
   image rejection, and mixed successful/failed multi-file imports.
@@ -165,3 +180,16 @@ Run on an interactive Windows 11 x64 machine and a native ARM64 machine:
 - [CopyImage ownership](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-copyimage)
 - [CreateIconIndirect](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createiconindirect)
 - [.NET single-file deployment](https://learn.microsoft.com/en-us/dotnet/core/deploying/single-file/overview)
+
+## Rebuilding the icon
+
+Both platforms use the same flower artwork. On a Mac, generate the shared icon
+PNGs, then wrap their unchanged pixels in the Windows ICO container:
+
+```sh
+swift scripts/make-icon.swift /tmp/CuteCursor.iconset
+python3 scripts/make-windows-icon.py /tmp/CuteCursor.iconset Windows/CuteCursor.Windows/Assets/CuteCursorBloom.ico
+```
+
+The committed icon is included in the EXE, window and tray. No extra font files
+are bundled: the approved native font treatment remains unchanged.

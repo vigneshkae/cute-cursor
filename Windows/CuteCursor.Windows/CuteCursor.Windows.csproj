@@ -7,17 +7,18 @@
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <ImplicitUsings>disable</ImplicitUsings>
     <AssemblyName>CuteCursor</AssemblyName>
-    <Version>0.1.0-preview</Version>
+    <Version>0.3.2-beta.1</Version>
     <Product>Cute Cursor</Product>
-    <Description>Windows source preview of Cute Cursor</Description>
+    <Description>Cute Cursor for Windows — flower theme and 20 cursor choices</Description>
     <RootNamespace>CuteCursor.Windows</RootNamespace>
-    <ApplicationIcon>Assets/CuteCursor.ico</ApplicationIcon>
+    <ApplicationIcon>Assets/CuteCursorBloom.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../CuteCursor.Core/CuteCursor.Core.csproj" />
     <EmbeddedResource Include="../../Examples/Soft-Bloom.cutecursor" LogicalName="SoftBloom.cutecursor" />
     <Resource Include="../../Sources/CursorStudio/Resources/SoftBloom/soft-bloom-pointer.png" Link="Assets/flower.png" />
+    <Resource Include="Assets/CuteCursorBloom.ico" />
     <Content Include="../../LICENSE" Link="LICENSE.txt" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

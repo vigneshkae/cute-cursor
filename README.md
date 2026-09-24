@@ -9,12 +9,14 @@ Cute Cursor lets you turn images into cursors and build a matching set for your 
 It comes with **Soft Bloom**, a yellow-and-sage flower pack with 11 cursor roles,
 each starting at **40 pt**.
 
-**Private testing — not a finished release.** Mac and Windows development downloads
-are available to authorized repository members on the
-[private test release](https://github.com/vigneshkae/cute-cursor/releases/tag/private-test-2026-09-23.1).
-The Mac build is ad-hoc signed and unnotarized; Windows builds are unsigned.
-These are for hands-on testing. Signing and broader compatibility checks remain
-before a public release. See [test installation instructions](docs/TESTING_DOWNLOADS.md).
+**Windows 0.3.2 testing beta:** this branch includes the same 20 cursor choices
+as Mac, including **Ancestor** and **No Smoking**, plus the Soft Bloom pack.
+All new cursors start at visual size **40**, adjusted for Windows display scaling.
+System Default restores the configured Windows cursor scheme.
+
+Windows packages are unsigned and intended for testing. The published
+[Mac 0.3.1 beta](https://github.com/vigneshkae/cute-cursor/releases/tag/v0.3.1-beta.1)
+is Developer ID signed and notarized. See [test installation instructions](docs/TESTING_DOWNLOADS.md).
 
 ![Cute Cursor showing the Soft Bloom pack and botanical interface](docs/images/soft-bloom.png)
 
@@ -28,7 +30,7 @@ before a public release. See [test installation instructions](docs/TESTING_DOWNL
   accents across all 11 slots. Every default slot starts at 40 pt and is editable.
 - **Apply across your desktop.** Use Apply cursor or Apply pack. Some apps draw their
   own cursors; see the compatibility notes below.
-- **Return to normal.** Restore default stays in the bottom bar and menu bar.
+- **Return to normal.** System Default is available in the library, bottom bar, and tray.
   Quitting also restores the original cursors; closing the window keeps the app running.
 - **Share your work.** Export one `.cutecursor` file with its images, sizes, and
   click points. Import through the app or drag and drop.

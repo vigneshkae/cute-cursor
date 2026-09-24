@@ -33,7 +33,13 @@ public partial class App : Application
             var window = new MainWindow(directory, automation);
             // The hosted runner has a small virtual desktop. Minimum bounds keep
             // the real visual tree at the review size without detaching its images.
-            if (automation) { window.MinWidth = 1220; window.MinHeight = 900; }
+            if (automation)
+            {
+                var viewIndex = Array.IndexOf(e.Args, "--view");
+                window.ConfigureReview(viewIndex >= 0 ? e.Args[viewIndex + 1] : "cursors");
+                if (e.Args.Contains("--compact")) { window.Width = window.MinWidth = 840; window.Height = window.MinHeight = 620; }
+                else { window.MinWidth = 1220; window.MinHeight = 900; }
+            }
             MainWindow = window; window.Show();
             if (automation)
             {

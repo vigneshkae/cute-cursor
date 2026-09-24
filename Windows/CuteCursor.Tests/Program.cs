@@ -42,13 +42,53 @@ try
     Test("Pack slots and library images stay independent", () =>
     {
         var lib = new Library(root, bloomBytes, _ => { }); var id = lib.AddCursor(first); var packId = lib.AddPack(new() { Name = "New pack" });
-        lib.SetSlot(packId, "link", lib.State.Cursors.Single().Image); lib.EditCursor(id, first with { Size = 64 });
+        lib.SetSlot(packId, "link", lib.State.Cursors.Single(c => c.Id == id).Image); lib.EditCursor(id, first with { Size = 64 });
         Check(lib.State.Packs.Single().Pack.Cursors.Single().Size == 40); lib.Favorite(id);
-        Check(new Library(root, bloomBytes, _ => { }).State.Cursors.Single().Favorite); lib.RemoveCursor(id);
+        Check(new Library(root, bloomBytes, _ => { }).State.Cursors.Single(c => c.Id == id).Favorite); lib.RemoveCursor(id);
         Check(lib.State.Packs.Single().Pack.Cursors.Count == 1); lib.SetSlot(packId, "link", null); Check(lib.State.Packs.Single().Pack.Cursors.Count == 0);
     });
     Test("Rejected mutations preserve saved bytes", () => { var lib = new Library(root, bloomBytes, _ => { }); var before = File.ReadAllBytes(Path.Combine(root, "library.json")); Reject(() => lib.RenamePack(lib.State.Packs.Single().Id, "")); Check(before.SequenceEqual(File.ReadAllBytes(Path.Combine(root, "library.json")))); });
     Test("Corrupt existing library is not overwritten", () => { var badDir = Path.Combine(root, "corrupt"); Directory.CreateDirectory(badDir); var path = Path.Combine(badDir, "library.json"); File.WriteAllText(path, "{broken"); Reject(() => new Library(badDir, bloomBytes, _ => { })); Check(File.ReadAllText(path) == "{broken"); });
+    Test("Default collection contains 20 unique named pointers at 40", () =>
+    {
+        var cursors = BundledCollection.Load();
+        Check(cursors.Count == 20 && cursors.Select(c => c.Id).Distinct().Count() == 20);
+        Check(cursors.All(c => c.Image.Size == 40 && c.Image.Role == "pointer"));
+        Check(cursors[0].Image.Name == "Ancestor" && cursors[2].Image.Name == "No Smoking");
+    });
+    Test("Collection edits, favorites and deletions survive reopening", () =>
+    {
+        var directory = Path.Combine(root, "collection"); var lib = new Library(directory, bloomBytes, _ => { });
+        var item = lib.State.Cursors[0]; var deleted = lib.State.Cursors[1].Id;
+        lib.EditCursor(item.Id, item.Image with { Name = "My pointer", Size = 53, HotspotX = .27 });
+        lib.Favorite(item.Id); lib.RemoveCursor(deleted);
+        var reopened = new Library(directory, bloomBytes, _ => { });
+        var kept = reopened.State.Cursors.Single(c => c.Id == item.Id);
+        Check(kept.Favorite && kept.Image.Name == "My pointer" && kept.Image.Size == 53 && kept.Image.HotspotX == .27);
+        Check(reopened.State.Cursors.Count == 19 && reopened.State.Cursors.All(c => c.Id != deleted));
+    });
+    Test("Older Windows libraries gain collection without overwriting edits", () =>
+    {
+        var directory = Path.Combine(root, "upgrade"); Directory.CreateDirectory(directory);
+        var custom = new SavedCursor(Guid.NewGuid(), first with { Name = "My imported cursor", Size = 62 }, true);
+        var existing = BundledCollection.Load()[0] with { Image = first with { Name = "Already edited", Size = 49 } };
+        var old = new LibraryState { SoftBloomInstalled = true, Cursors = [custom, existing], Packs = [] };
+        File.WriteAllBytes(Path.Combine(directory, "library.json"), JsonSerializer.SerializeToUtf8Bytes(old, PackCodec.Json));
+        var lib = new Library(directory, bloomBytes, _ => { });
+        Check(lib.State.CollectionInstalled && lib.State.Cursors.Count == 21 && lib.State.Packs.Count == 0);
+        Check(lib.State.Cursors[0].Favorite && lib.State.Cursors[0].Image.Size == 62);
+        Check(lib.State.Cursors.Single(c => c.Id == existing.Id).Image.Name == "Already edited");
+        Check(new Library(directory, bloomBytes, _ => { }).State.Cursors.Count == 21);
+    });
+    Test("A collection decoding failure never writes a partial migration", () =>
+    {
+        var directory = Path.Combine(root, "bad-collection"); Directory.CreateDirectory(directory);
+        var path = Path.Combine(directory, "library.json");
+        var bytes = JsonSerializer.SerializeToUtf8Bytes(new LibraryState { SoftBloomInstalled = true }, PackCodec.Json);
+        File.WriteAllBytes(path, bytes);
+        Reject(() => new Library(directory, bloomBytes, _ => throw new InvalidDataException("Bad pixels")));
+        Check(File.ReadAllBytes(path).SequenceEqual(bytes));
+    });
 }
 finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
 Test("Apply and restore all Windows roles without leaked handles", () =>
@@ -66,12 +106,31 @@ Test("Failed reapply restores the prior custom pack", () => { var b = new FakeBa
 Test("Failed rollback keeps originals available for retry", () => { var b = new FakeBackend { FailInstall = n => n >= 3 }; var s = new CursorSession(b); Reject(() => s.Apply(bloom, 1)); Check(s.HasChanges && b.Installs == 12); b.FailInstall = _ => false; s.Restore(); Check(b.OriginalsRestored && b.Outstanding == 0); });
 Test("Restore attempts every role and keeps state on failure", () => { var b = new FakeBackend(); var s = new CursorSession(b); s.Apply(bloom, 1); b.FailInstall = n => n == 11; Reject(s.Restore); Check(s.HasChanges && b.Installs == 18); b.FailInstall = _ => false; s.Restore(); Check(!s.HasChanges && b.Outstanding == 0); });
 Test("Preview-only pack does not change system cursors", () => { var b = new FakeBackend(); var s = new CursorSession(b); Reject(() => s.Apply(With(first with { Role = "grab" }), 1)); Check(b.Installs == 0 && b.Outstanding == 0); });
+Test("System Default reloads configured scheme instead of stale originals", () =>
+{
+    var b = new FakeBackend(); foreach (var id in b.Live.Keys) b.Live[id] = "leftover flower";
+    var s = new CursorSession(b); s.Apply(bloom, 1); s.RestoreSystemDefaults();
+    Check(b.OriginalsRestored && !s.HasChanges && b.Outstanding == 0 && b.Reloads == 1);
+});
+Test("System Default runs even without an active session", () =>
+{
+    var b = new FakeBackend(); b.Live[32512] = "leftover flower"; var s = new CursorSession(b);
+    s.RestoreSystemDefaults(); s.RestoreSystemDefaults(); Check(b.OriginalsRestored && b.Reloads == 2 && b.Outstanding == 0);
+});
+Test("Failed System Default preserves recovery handles for retry", () =>
+{
+    var b = new FakeBackend(); var s = new CursorSession(b); s.Apply(bloom, 1); b.FailReload = true;
+    Reject(s.RestoreSystemDefaults); Check(s.HasChanges && b.Outstanding == 9);
+    b.FailReload = false; s.RestoreSystemDefaults(); Check(!s.HasChanges && b.OriginalsRestored && b.Outstanding == 0);
+    s.Apply(With(first), 1); s.Restore(); Check(b.OriginalsRestored && b.Outstanding == 0);
+});
 Console.WriteLine($"{passed} tests passed. No system cursors were changed.");
 
 sealed class FakeBackend : ICursorBackend
 {
     public Dictionary<uint, string> Live { get; } = Roles.SystemIds.Values.ToDictionary(id => id, id => "original:" + id);
-    public int Outstanding, Installs, Captures;
+    public int Outstanding, Installs, Captures, Reloads;
+    public bool FailReload;
     public string? FailCreateRole;
     public int FailCaptureAt;
     public Func<int, bool> FailInstall = _ => false;
@@ -79,6 +138,7 @@ sealed class FakeBackend : ICursorBackend
     public ICursorImage Capture(uint id) { if (++Captures == FailCaptureAt) throw new Exception("capture failed"); return new Image(this, Live[id]); }
     public ICursorImage Create(CursorSlot slot, double scale) { if (slot.Role == FailCreateRole) throw new Exception("decode failed"); return new Image(this, $"custom:{slot.Role}:{slot.Size}"); }
     public void Install(ICursorImage image, uint id) { var i = (Image)image; if (i.Disposed) throw new Exception("disposed handle"); if (FailInstall(++Installs)) throw new Exception("native failure"); Live[id] = i.Value; }
+    public void ReloadConfiguredScheme() { Reloads++; if (FailReload) throw new Exception("Scheme reload failed"); foreach (var id in Live.Keys) Live[id] = "original:" + id; }
     private sealed class Image : ICursorImage
     {
         private readonly FakeBackend owner;
