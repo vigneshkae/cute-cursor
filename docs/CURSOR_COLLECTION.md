@@ -3,7 +3,7 @@
 The Mac app includes these 20 individual cursors, plus the 11-role Soft Bloom pack.
 All start at 40 logical points on a fresh install. System Default restores the Mac's own cursors and follows system size and color settings.
 
-1. Little Swimmer
+1. Ancestor
 2. Floral Cross
 3. Cigarette
 4. Syringe
