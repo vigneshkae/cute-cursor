@@ -1,5 +1,39 @@
 # Changes
 
+## Unreleased — decisions logged September 24, 2026
+
+- Approved cursor names: **Ancestor** (previously Little Swimmer) and
+  **No Smoking** (previously Cigarette).
+- Both names are saved in the maintainer's current library and the bundled
+  collection source. The published 0.3.1 download predates these name changes;
+  include them in the next packaged release.
+
+### Pending final design change
+
+- Replace the **Cute Cursor header wordmark** font with a cute open-source font
+  that suits the yellow-and-sage Soft Bloom theme. Font selection is pending;
+  no font change has been applied yet.
+- Shortlist: Fredoka Medium (rounded and playful), Fraunces SemiBold (soft,
+  vintage character), Quicksand SemiBold (light and friendly), Comfortaa Bold
+  (rounded geometric letters), and Baloo 2 SemiBold (bold and bubbly).
+- Initial recommendation: Fredoka Medium for a playful logo; Fraunces SemiBold
+  for a more botanical, elegant direction. These are design suggestions, not an
+  approved selection.
+- Each shortlisted family uses SIL OFL 1.1. If bundled, retain its copyright
+  notice and OFL license alongside the app's separate MIT license. Sources:
+  [Fredoka](https://github.com/google/fonts/blob/main/ofl/fredoka/OFL.txt),
+  [Fraunces](https://github.com/google/fonts/blob/main/ofl/fraunces/OFL.txt),
+  [Quicksand](https://github.com/google/fonts/blob/main/ofl/quicksand/OFL.txt),
+  [Comfortaa](https://github.com/googlefonts/comfortaa),
+  [Baloo 2](https://github.com/google/fonts/blob/main/ofl/baloo2/OFL.txt).
+
+## 0.3.1 (6) — Mac icon and reset fix
+
+- Recreate native system cursors even when a previous process left a custom
+  cursor behind or the app has no active selection.
+- Refresh the cached app icon and explicitly load the matching Soft Bloom icon.
+- Publish Developer ID signed and notarized Mac app and DMG updates.
+
 ## 0.3.0 (5) — Mac collection release
 
 - Bundle 20 maintainer-supplied cursors with clear, consistent names.
