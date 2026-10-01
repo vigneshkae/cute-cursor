@@ -90,3 +90,26 @@ not treated as memory or runtime evidence for the current Windows beta.
   and accessibility tests, and the broader Mac compatibility/installation matrix.
   These downloads remain labelled public betas. No signing identity is fabricated,
   and an unsigned installer is not described as a signed final release.
+
+## Public-page privacy and download notice review — October 1, 2026
+
+- Added a prominent unsigned-Windows notice to the README, download guide,
+  Windows branch documentation, and Windows 0.3.3 release notes. It explains
+  possible publisher/SmartScreen warnings and policy blocks without suggesting
+  disabling security protections.
+- Replaced the main README screenshot with a capture of the Soft Bloom cursor
+  editor. The capture contains only the app window; its metadata is checked for
+  identifying information before publication.
+- Scanned 216 reachable text-blob versions, commit messages, tracked credential
+  filenames, and all seven release descriptions. No recognizable private keys,
+  provider-token patterns, credential-bearing URLs, or literal secret assignments
+  were found. An email-pattern match in an icon filename was a false positive.
+- Inspected the bundled PNG metadata: only color-space and pixel-dimension fields
+  were present, with no location or contact fields.
+- GitHub secret scanning and push protection are enabled; the secret-scanning
+  alerts API returned no alerts at review time. Future local commits use a GitHub
+  noreply address. Historical author metadata and public publisher/copyright
+  attribution require separate handling; this check is not a guarantee that the
+  repository or signed downloads contain no identifying information.
+
+These are bounded source and metadata checks, not a comprehensive security audit.

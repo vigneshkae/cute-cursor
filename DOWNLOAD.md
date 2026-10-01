@@ -16,8 +16,18 @@ the **Soft Bloom** pack, with visual size **40** defaults.
 - **Windows:** one installer automatically chooses Intel/AMD or ARM. It includes
   the runtime, installs for your account, and adds a Start menu shortcut and an
   uninstaller. No administrator access or separate .NET download is needed.
-  **This Windows beta is unsigned**, so Windows may show an unknown-publisher
-  warning. Publisher signing remains pending.
+  **This Windows beta is unsigned.** Publisher signing remains pending.
+
+### Windows security notice
+
+The installer and portable apps are unsigned. Windows may display **“Windows
+protected your PC”** or **“Unknown publisher.”** Some Windows security settings
+and work/school policies may block unsigned apps entirely. An installer does not
+remove these restrictions; do not turn off Windows security protections to install it.
+
+You do **not** need identity documents, a paid developer account, or a signing
+certificate to download Cute Cursor. Publisher verification is the developer's
+responsibility. The Mac download is separately Apple-signed and notarized.
 
 ## Start using it
 

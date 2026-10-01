@@ -21,6 +21,11 @@ see the [complete cursor collection](docs/CURSOR_COLLECTION.md).
 | Open the DMG → drag to Applications → launch | Open the installer → Install → launch |
 | Apple-signed and notarized | Unsigned beta; Windows may show a publisher warning |
 
+> **Windows download notice:** The Windows installer and portable apps are unsigned.
+> You may see “Windows protected your PC” or “Unknown publisher.” Some security
+> settings and work/school PCs may block them. No identity documents or developer
+> account are needed to download Cute Cursor. Mac downloads are Apple-signed and notarized.
+
 Version **0.3.3 beta**. Mac includes Apple Silicon and Intel code. The Windows
 installer automatically selects Intel/AMD or ARM, includes the runtime, and adds a
 Start menu shortcut and uninstaller. No GitHub account or developer tools needed.
@@ -37,7 +42,7 @@ Closing the window keeps custom cursors active; Quit / ⌘Q / Exit restores your
 The Mac source remains on this branch. The Windows implementation and setup guide
 are on [codex/windows](https://github.com/vigneshkae/cute-cursor/tree/codex/windows).
 
-![Cute Cursor showing the Soft Bloom pack and botanical interface](docs/images/soft-bloom.png)
+![Cute Cursor on Mac showing the Soft Bloom cursor editor and yellow-and-sage interface](docs/images/soft-bloom-cursor-editor.jpg)
 
 ## What you can do
 
