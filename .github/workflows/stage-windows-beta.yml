@@ -1,0 +1,85 @@
+name: Stage a verified Windows beta
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Successful Windows build run ID
+        required: true
+      source_sha:
+        description: Full source commit checked by that run
+        required: true
+      tag:
+        description: New windows-vX.Y.Z-beta.N tag
+        required: true
+      notes:
+        description: Reviewed release notes
+        required: true
+permissions:
+  contents: read
+jobs:
+  stage:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      BUILD_RUN: ${{ inputs.run_id }}
+      SOURCE_SHA: ${{ inputs.source_sha }}
+      RELEASE_TAG: ${{ inputs.tag }}
+      RELEASE_NOTES: ${{ inputs.notes }}
+    steps:
+      - name: Verify source run and both architecture jobs
+        shell: python
+        run: |
+          import json, os, re, subprocess
+          run_id, sha, tag = (os.environ[k] for k in ('BUILD_RUN', 'SOURCE_SHA', 'RELEASE_TAG'))
+          assert re.fullmatch(r'\d+', run_id)
+          assert re.fullmatch(r'[0-9a-f]{40}', sha)
+          assert re.fullmatch(r'windows-v\d+\.\d+\.\d+-beta\.\d+', tag)
+          def api(path):
+              return json.loads(subprocess.check_output(['gh', 'api', f'repos/{os.environ["GH_REPO"]}/{path}']))
+          run = api(f'actions/runs/{run_id}')
+          assert run['conclusion'] == 'success' and run['head_sha'] == sha
+          assert run['head_branch'] == 'codex/windows' and run['event'] == 'push'
+          assert run['path'] == '.github/workflows/windows.yml'
+          jobs = {j['name']: j['conclusion'] for j in api(f'actions/runs/{run_id}/jobs?per_page=100')['jobs']}
+          assert jobs.get('windows') == jobs.get('windows-arm') == 'success'
+          print('Verified source commit and successful x64/ARM64 installer checks.')
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows-test-packages
+          path: package
+          run-id: ${{ inputs.run_id }}
+          github-token: ${{ github.token }}
+      - name: Verify artifact files and stage draft only
+        shell: python
+        run: |
+          import hashlib, os, pathlib, subprocess, zipfile, struct
+          root = pathlib.Path('package')
+          names = ['Cute-Cursor-Setup.exe', 'Cute-Cursor-Windows-x64.zip', 'Cute-Cursor-Windows-ARM64.zip']
+          assert {p.name for p in root.iterdir()} == set(names + [n + '.sha256' for n in names])
+          for name in names:
+              file = root / name
+              digest = hashlib.sha256(file.read_bytes()).hexdigest()
+              checksum, filename = (root / (name + '.sha256')).read_text().split()
+              assert digest == checksum and filename == name
+              if name.endswith('.zip'):
+                  with zipfile.ZipFile(file) as archive:
+                      assert archive.testzip() is None
+                      assert set(archive.namelist()) == {'CuteCursor.exe', 'LICENSE.txt', 'READ-ME.txt'}
+                      exe = archive.read('CuteCursor.exe')
+                      pe = struct.unpack_from('<I', exe, 0x3c)[0]
+                      assert exe[:2] == b'MZ' and exe[pe:pe+4] == b'PE\0\0'
+                      assert struct.unpack_from('<H', exe, pe+4)[0] == (0xaa64 if 'ARM64' in name else 0x8664)
+              else:
+                  assert file.read_bytes()[:2] == b'MZ'
+              print(f'{digest}  {name}')
+          notes = pathlib.Path('release-notes.md')
+          notes.write_text(os.environ['RELEASE_NOTES'])
+          subprocess.run(['gh', 'release', 'create', os.environ['RELEASE_TAG'],
+              *[str(p) for p in sorted(root.iterdir())], '--draft', '--prerelease',
+              '--target', os.environ['SOURCE_SHA'], '--title', 'Cute Cursor ' + os.environ['RELEASE_TAG'].removeprefix('windows-v') + ' — Windows installer',
+              '--notes-file', str(notes)], check=True)
