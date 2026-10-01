@@ -7,6 +7,12 @@ Windows builds are prepared from `codex/windows` and published as GitHub Release
 assets. The repository is public. The installer and portable packages are unsigned
 testing builds, not signed final releases.
 
+> **Windows security notice:** The installer and portable apps may show “Windows
+> protected your PC” or “Unknown publisher.” Some security settings and work/school
+> policies block unsigned apps entirely. Do not turn off Windows security protections
+> to install Cute Cursor. Users do not need identity documents, a developer account,
+> or a signing certificate; publisher verification is the developer's responsibility.
+
 **Recommended:** [Cute-Cursor-Setup.exe](https://github.com/vigneshkae/cute-cursor/releases/download/windows-v0.3.3-beta.1/Cute-Cursor-Setup.exe).
 Open it and choose Install. It selects x64 or ARM64 automatically, installs for
 your account, and adds a Start menu shortcut and uninstaller. Quit Cute Cursor

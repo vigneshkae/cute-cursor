@@ -22,6 +22,11 @@ ZIPs remain available as alternatives. Windows packages are unsigned and intende
 [Mac 0.3.3 beta](https://github.com/vigneshkae/cute-cursor/releases/tag/v0.3.3-beta.1)
 is Developer ID signed and notarized. See [test installation instructions](docs/TESTING_DOWNLOADS.md).
 
+> **Windows download notice:** The Windows installer and portable apps are unsigned.
+> You may see “Windows protected your PC” or “Unknown publisher.” Some security
+> settings and work/school PCs may block them. No identity documents or developer
+> account are needed to download Cute Cursor. Mac downloads are Apple-signed and notarized.
+
 ![Cute Cursor for Windows showing Soft Bloom](docs/images/windows-soft-bloom.png)
 
 ## What you can do
