@@ -13,5 +13,7 @@ are absent, and verify that every changed cursor can be restored. Do not enable
 system-changing integration tests on unattended CI. Include macOS version and
 hardware in reports of cursor application problems.
 
-Windows is a planned separate implementation. Keep portable role names and the
-pack schema stable; propose a new format version before making incompatible changes.
+Windows is implemented on [codex/windows](https://github.com/vigneshkae/cute-cursor/tree/codex/windows).
+Read its `Windows/AGENTS.md` and run the portable tests before submitting Windows
+changes. Keep portable role names and the pack schema stable; propose a new format
+version before making incompatible changes.

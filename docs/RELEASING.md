@@ -26,8 +26,12 @@ points** on Mac (80 device pixels at 2× Retina scale), not 40 physical pixels.
 Fresh bundled cursors, all default pack roles, and new image imports use 40.
 Existing user size edits and imported pack settings remain intact.
 
-The Windows branch has not received these changes yet. The new Mac build and DMG have both passed signing, notarization, and ticket
-validation. The previous Mac beta remains available as an older release.
+The Windows 0.3.2 beta now includes the 20 named choices, visual size 40 defaults,
+matching flower branding, and System Default restoration. Its x64 and ARM64 ZIPs
+remain unsigned test builds on `codex/windows`. The Mac app and DMG have passed
+signing, notarization, and ticket validation; previous betas remain as older releases.
+The approved Ancestor and No Smoking names still need a new Mac package: 0.3.1
+predates those changes. See the [launch review](LAUNCH_REVIEW.md).
 
 ## Before a stable release
 

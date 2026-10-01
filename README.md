@@ -11,11 +11,27 @@ each starting at **40 pt**. New image imports also start at 40.
 The collection includes flowers, food, a rocket, a guitar, and more;
 see the [complete cursor collection](docs/CURSOR_COLLECTION.md).
 
+## Download the beta
+
+| Your computer | Direct download | Installation |
+| --- | --- | --- |
+| Mac — Apple Silicon or Intel | [Mac DMG](https://github.com/vigneshkae/cute-cursor/releases/download/v0.3.1-beta.1/Cute-Cursor-macOS.dmg) | Open, drag Cute Cursor to Applications, then launch |
+| Windows — Intel or AMD | [Windows x64 ZIP](https://github.com/vigneshkae/cute-cursor/releases/download/windows-v0.3.2-beta.1/Cute-Cursor-Windows-x64.zip) | Extract the ZIP, then open CuteCursor.exe |
+| Windows — ARM / Snapdragon | [Windows ARM64 ZIP](https://github.com/vigneshkae/cute-cursor/releases/download/windows-v0.3.2-beta.1/Cute-Cursor-Windows-ARM64.zip) | Extract the ZIP, then open CuteCursor.exe |
+
+These are **beta releases**. Mac is signed and notarized; Windows is unsigned.
+No GitHub account, source-code download, or development tools are needed.
+See the [October 1 launch review](docs/LAUNCH_REVIEW.md) for verified checks and
+remaining release work.
+
 **[Download the Mac beta](https://github.com/vigneshkae/cute-cursor/releases/tag/v0.3.1-beta.1)** —
 version 0.3.1 (6), Developer ID signed and notarized by Apple. One universal DMG
 supports Apple Silicon and Intel Macs, targeting macOS 14 or newer. Open the DMG,
 drag Cute Cursor to Applications, and open it there. A ZIP and SHA-256 checksums
 are also included. See the compatibility notes below for hardware testing limits.
+The published Mac installer still uses **Little Swimmer** and **Cigarette**;
+their approved replacements, **Ancestor** and **No Smoking**, are in the source
+and Windows beta and will be included in the next Mac package.
 
 **[Download the Windows 0.3.2 beta](https://github.com/vigneshkae/cute-cursor/releases/tag/windows-v0.3.2-beta.1)** —
 includes the 20 named cursors, Soft Bloom pack, visual size 40 defaults, matching

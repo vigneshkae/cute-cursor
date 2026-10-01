@@ -40,8 +40,9 @@ Not yet verified:
 
 - macOS 14/15/26 behavior, Intel hardware, every cursor role visually in other apps.
 - Cold-launch Finder pack opening and OS upgrade behavior.
-- Windows runtime checks; its implementation and preview executables are maintained
-  separately on `codex/windows`.
+- Interactive Windows Apply/Restore and ARM hardware checks. Windows 0.3.2 now has
+  automated native and packaged x64 checks; see its separate
+  [validation record](https://github.com/vigneshkae/cute-cursor/blob/codex/windows/docs/WINDOWS_VALIDATION.md).
 
 This is evidence for a Mac beta, not a claim of a fully validated public release.
 
