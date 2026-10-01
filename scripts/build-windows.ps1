@@ -3,6 +3,7 @@ $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $PSScriptRoot
 $output = Join-Path $root "dist/windows/$Runtime"
 $project = Join-Path $root "Windows/CuteCursor.Windows/CuteCursor.Windows.csproj"
+$version = ([xml](Get-Content $project -Raw)).Project.PropertyGroup.Version
 New-Item -ItemType Directory -Force -Path $output | Out-Null
 # Local development packaging only. No signing, uploading, registry edits, or install.
 dotnet publish $project -c Release -r $Runtime --self-contained true -o $output `
@@ -20,7 +21,7 @@ if ([BitConverter]::ToUInt16($bytes, $pe + 4) -ne $expectedMachine) { throw "Exe
 $architecture = if ($Runtime -eq "win-x64") { "x64" } else { "ARM64" }
 $zip = Join-Path $root "dist/Cute-Cursor-Windows-$architecture.zip"
 @"
-Cute Cursor 0.3.2 beta - Windows $architecture
+Cute Cursor $version - Windows $architecture
 
 Extract the whole ZIP, then open CuteCursor.exe. Keep LICENSE.txt with it.
 This package includes .NET; you do not need to install it separately.

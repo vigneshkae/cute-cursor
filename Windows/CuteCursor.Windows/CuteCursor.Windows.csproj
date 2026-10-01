@@ -7,7 +7,7 @@
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <ImplicitUsings>disable</ImplicitUsings>
     <AssemblyName>CuteCursor</AssemblyName>
-    <Version>0.3.2-beta.1</Version>
+    <Version>0.3.3-beta.1</Version>
     <Product>Cute Cursor</Product>
     <Description>Cute Cursor for Windows — flower theme and 20 cursor choices</Description>
     <RootNamespace>CuteCursor.Windows</RootNamespace>
