@@ -1,5 +1,14 @@
 # Changes
 
+## Windows 0.3.3 beta — one installer
+
+- Add one setup executable that selects the native x64 or ARM64 app automatically.
+- Install for the current user without administrator access; add Start menu and optional desktop shortcuts plus an uninstaller.
+- Preserve saved cursor libraries across install, upgrade and uninstall.
+- Block upgrades/removal while Cute Cursor is running so users can exit and restore cursors first.
+- Add installer lifecycle and native app checks on x64 and Windows ARM runners.
+- Keep unsigned-beta labelling until publisher signing is configured.
+
 ## Windows 0.3.2 beta — collection and system-default parity
 
 - Bundle the same 20 cursor choices as Mac, with approved Ancestor and No Smoking names.

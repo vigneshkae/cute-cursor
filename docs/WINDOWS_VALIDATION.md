@@ -1,3 +1,25 @@
+# Windows 0.3.3 installer validation — October 1, 2026
+
+Source: `4e9aae7a1c9241ffcf627aae5ab635711ef48014`.
+[Successful x64 and native ARM64 run](https://github.com/vigneshkae/cute-cursor/actions/runs/36865962171).
+
+- 34 portable tests, native image/UI checks, and packaged x64 smoke tests passed.
+- One installer contains both native builds and selects the architecture itself.
+- On **both x64 and Windows ARM64 runners**, verified correct installed PE
+  architecture, Start menu shortcut, included license, and the installed app's
+  native image/cursor/UI smoke tests (124 variants).
+- Verified install, repeat installation/upgrade, and uninstall. A sentinel in the
+  separate user library survived all stages unchanged; the executable and shortcut
+  were removed on uninstall.
+- Verified the installer refuses to proceed while the app's named mutex exists,
+  allowing users to exit normally and restore cursors before updating/removing.
+- No SetSystemCursor calls or live scheme changes ran in CI. Hands-on behavior
+  across other Windows apps and accessibility settings still needs verification.
+- No Windows signing identity is configured; installer and portable ZIPs are
+  **unsigned betas**, not signed final releases.
+
+The September record below describes the earlier ZIP-only beta.
+
 # Windows 0.3.2 beta validation
 
 Build source: `2fec31c014188f861906f337466f81c448f40301` on `codex/windows`.

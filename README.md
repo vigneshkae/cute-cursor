@@ -9,13 +9,17 @@ Cute Cursor lets you turn images into cursors and build a matching set for your 
 It comes with **Soft Bloom**, a yellow-and-sage flower pack with 11 cursor roles,
 each starting at **40 pt**.
 
-**[Download Windows 0.3.2 testing beta](https://github.com/vigneshkae/cute-cursor/releases/tag/windows-v0.3.2-beta.1):** this branch includes the same 20 cursor choices
+**[Download Windows 0.3.3 testing beta](https://github.com/vigneshkae/cute-cursor/releases/tag/windows-v0.3.3-beta.1):** this branch includes the same 20 cursor choices
 as Mac, including **Ancestor** and **No Smoking**, plus the Soft Bloom pack.
 All new cursors start at visual size **40**, adjusted for Windows display scaling.
 System Default restores the configured Windows cursor scheme.
 
-Windows packages are unsigned and intended for testing. The published
-[Mac 0.3.1 beta](https://github.com/vigneshkae/cute-cursor/releases/tag/v0.3.1-beta.1)
+**[Easy download page for Mac and Windows](https://github.com/vigneshkae/cute-cursor/blob/main/DOWNLOAD.md)**
+
+The Windows download is now one installer that selects x64 or ARM64 automatically,
+adds a Start menu shortcut and uninstaller, and preserves your library. Portable
+ZIPs remain available as alternatives. Windows packages are unsigned and intended for testing. The published
+[Mac 0.3.3 beta](https://github.com/vigneshkae/cute-cursor/releases/tag/v0.3.3-beta.1)
 is Developer ID signed and notarized. See [test installation instructions](docs/TESTING_DOWNLOADS.md).
 
 ![Cute Cursor for Windows showing Soft Bloom](docs/images/windows-soft-bloom.png)

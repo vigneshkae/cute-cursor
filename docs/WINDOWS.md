@@ -1,4 +1,4 @@
-# Cute Cursor for Windows — 0.3.2 testing beta
+# Cute Cursor for Windows — 0.3.3 testing beta
 
 The Windows implementation lives on `codex/windows`, separately from the Mac
 release branch `codex/mac-public-beta`. It is a native WPF desktop app using .NET 10 and
@@ -27,7 +27,9 @@ require hands-on Windows testing; a successful build is not that verification.
    recovery after an interrupted session. No cursor registry modifications.
 4. **Automation and packaging — implemented.** Portable tests, Windows-native
    image/cursor creation checks, isolated UI rendering, self-contained x64/ARM64
-   ZIP packaging. CI does not apply system cursors or publish installers.
+   ZIP packaging, and one installer that selects the native architecture. CI tests
+   install/upgrade/uninstall on x64 and Windows ARM. It does not apply system
+   cursors or publish releases.
 5. **Collection parity — implemented.** The same 20 individual cursors as Mac,
    including Ancestor and No Smoking, seeded once at size 40 without overwriting
    existing edits. Matching flower icon and unboxed logo; current font retained.
@@ -56,7 +58,18 @@ To create local portable development packages:
 ./scripts/build-windows.ps1 -Runtime win-arm64
 ```
 
-Extract the ZIP and open `CuteCursor.exe`. The runtime is bundled, so the packaged
+With Inno Setup 6.3+ installed, build the combined installer after both packages:
+
+```powershell
+./scripts/build-windows-installer.ps1
+```
+
+The installer adds shortcuts and uninstall support, keeps the library separate
+from installed files, and checks the app mutex before upgrade/removal. Its lifecycle
+test script is restricted to isolated CI runners. No administrator privileges are
+requested. Publisher signing is not configured yet.
+
+For a portable package, extract the ZIP and open `CuteCursor.exe`. The runtime is bundled, so the packaged
 app does not require a separate .NET installation. WPF native libraries may be
 extracted by .NET at launch. These EXEs are unsigned development builds and may
 trigger Windows reputation warnings. Builds on `codex/windows` retain temporary test ZIPs and UI review images.

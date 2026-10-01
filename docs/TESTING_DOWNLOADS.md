@@ -1,11 +1,18 @@
 # Mac and Windows test downloads
 
-## Windows 0.3.2 beta
+## Windows 0.3.3 beta
 
-Download the [Windows 0.3.2 beta](https://github.com/vigneshkae/cute-cursor/releases/tag/windows-v0.3.2-beta.1).
+Download the [Windows 0.3.3 beta](https://github.com/vigneshkae/cute-cursor/releases/tag/windows-v0.3.3-beta.1).
 Windows builds are prepared from `codex/windows` and published as GitHub Release
-assets. The repository is public. These portable packages are unsigned testing
-builds, not signed final installers.
+assets. The repository is public. The installer and portable packages are unsigned
+testing builds, not signed final releases.
+
+**Recommended:** [Cute-Cursor-Setup.exe](https://github.com/vigneshkae/cute-cursor/releases/download/windows-v0.3.3-beta.1/Cute-Cursor-Setup.exe).
+Open it and choose Install. It selects x64 or ARM64 automatically, installs for
+your account, and adds a Start menu shortcut and uninstaller. Quit Cute Cursor
+from its system-tray menu before updating or uninstalling. Your library is kept.
+
+Portable alternatives:
 
 - **Cute-Cursor-Windows-x64.zip**: Intel and AMD Windows PCs.
 - **Cute-Cursor-Windows-ARM64.zip**: Windows-on-ARM PCs.
@@ -19,7 +26,7 @@ Initial testing targets Windows 11. Do not disable Windows security globally.
 The packaging script validates each executable's actual PE architecture. CI
 launches the packaged x64 app, validates all 20 collection images and 11 pack
 roles, creates native cursor handles, and checks UI defaults without replacing
-live system cursors. ARM64 is cross-published and needs a native ARM64 PC test.
+live system cursors. The installer is also tested on a native Windows ARM runner.
 Actual system-wide Apply/Restore behavior still needs interactive Windows testing.
 
 ### What to test
@@ -38,14 +45,14 @@ Actual system-wide Apply/Restore behavior still needs interactive Windows testin
    Existing libraries should gain the collection once without losing user edits.
 8. Export a pack and import it on Mac; compare sizes and click points.
 
-Each ZIP has an adjacent `.sha256` file. Compare its hash with
+The installer and each ZIP have an adjacent `.sha256` file. Compare its hash with
 `Get-FileHash -Algorithm SHA256` in PowerShell. See [Windows details](WINDOWS.md)
 for recovery, supported image formats, display scaling and the full test matrix.
 See the [validation record](WINDOWS_VALIDATION.md) for the packaged build checks.
 
 ## Mac
 
-Use the [notarized Mac 0.3.1 beta](https://github.com/vigneshkae/cute-cursor/releases/tag/v0.3.1-beta.1),
+Use the [notarized Mac 0.3.3 beta](https://github.com/vigneshkae/cute-cursor/releases/tag/v0.3.3-beta.1),
 not the older development-preview DMG. It includes Apple Silicon and Intel code;
 Intel runtime behavior and older macOS versions still need hands-on checks.
 The current Mac app/library can be renamed independently of that published build.
