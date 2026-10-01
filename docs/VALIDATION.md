@@ -1,3 +1,15 @@
+# Mac 0.3.3 follow-up — October 1, 2026
+
+- 27 Swift tests and the simulated C transaction/recovery tests pass. New tests
+  cover migrating the two stock names once while preserving custom names,
+  sizes, click points, favorites, unrelated entries and intentional deletions.
+- The packaged 0.3.3 (7) app has all 20 entries and the approved Ancestor and No
+  Smoking names. Both binary slices still target macOS 14.
+- The actual app and DMG pass Developer ID signature/Gatekeeper checks, Apple
+  notarization and stapled-ticket validation. DMG integrity and published local
+  checksums pass. This build has not been claimed as hands-on tested across all
+  supported Mac versions or Intel hardware.
+
 # Mac beta validation — September 24, 2026
 
 Environment: macOS 27, Apple Silicon, Xcode's macOS 27 SDK.

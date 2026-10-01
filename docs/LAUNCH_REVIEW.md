@@ -45,7 +45,7 @@ replaced or promoted during this review.
 - Updated the repository description and release navigation to identify current
   beta downloads rather than the earlier source preview/development builds.
 
-## Work still needed before the intended final launch
+## Original worklist before the 0.3.3 follow-up
 
 | Item | Current evidence | Next action |
 | --- | --- | --- |
@@ -71,3 +71,22 @@ not treated as memory or runtime evidence for the current Windows beta.
 - [Windows branch build](https://github.com/vigneshkae/cute-cursor/actions/runs/35992264933)
 - [Mac validation details](VALIDATION.md)
 - [Windows validation details](https://github.com/vigneshkae/cute-cursor/blob/codex/windows/docs/WINDOWS_VALIDATION.md)
+
+## Follow-up: easier downloads — October 1, 2026
+
+- Mac **0.3.3 (7)** packages the approved names and migrates unchanged stock names
+  once for existing users. It passes 27 Swift tests, transaction tests, signing,
+  notarization and ticket checks. Both Apple Silicon and Intel slices target 14.0.
+- Windows **0.3.3 beta** adds one installer that selects x64 or ARM64, installs
+  without administrator access, adds shortcuts/uninstall support, and preserves
+  the library. It blocks upgrades/removal until the running app is exited normally.
+- Windows installer checks passed on both x64 and native Windows ARM64 runners:
+  correct architecture, installed app startup/smoke checks, shortcuts, upgrade,
+  removal, running-app protection and library preservation. This closes the earlier
+  native ARM execution gap, while hands-on cursor testing remains pending.
+- The [easy download page](../DOWNLOAD.md) gives users two choices: Mac or Windows.
+  Portable Windows ZIPs and the Mac ZIP remain available in release assets.
+- **Still pending:** Windows publisher signing, hands-on system-wide Apply/Restore
+  and accessibility tests, and the broader Mac compatibility/installation matrix.
+  These downloads remain labelled public betas. No signing identity is fabricated,
+  and an unsigned installer is not described as a signed final release.

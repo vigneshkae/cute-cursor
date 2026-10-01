@@ -11,37 +11,26 @@ each starting at **40 pt**. New image imports also start at 40.
 The collection includes flowers, food, a rocket, a guitar, and more;
 see the [complete cursor collection](docs/CURSOR_COLLECTION.md).
 
-## Download the beta
+## Download
 
-| Your computer | Direct download | Installation |
-| --- | --- | --- |
-| Mac — Apple Silicon or Intel | [Mac DMG](https://github.com/vigneshkae/cute-cursor/releases/download/v0.3.1-beta.1/Cute-Cursor-macOS.dmg) | Open, drag Cute Cursor to Applications, then launch |
-| Windows — Intel or AMD | [Windows x64 ZIP](https://github.com/vigneshkae/cute-cursor/releases/download/windows-v0.3.2-beta.1/Cute-Cursor-Windows-x64.zip) | Extract the ZIP, then open CuteCursor.exe |
-| Windows — ARM / Snapdragon | [Windows ARM64 ZIP](https://github.com/vigneshkae/cute-cursor/releases/download/windows-v0.3.2-beta.1/Cute-Cursor-Windows-ARM64.zip) | Extract the ZIP, then open CuteCursor.exe |
+**[Download Cute Cursor for Mac or Windows](DOWNLOAD.md)**
 
-These are **beta releases**. Mac is signed and notarized; Windows is unsigned.
-No GitHub account, source-code download, or development tools are needed.
-See the [October 1 launch review](docs/LAUNCH_REVIEW.md) for verified checks and
-remaining release work.
+| Mac | Windows 11 |
+| --- | --- |
+| **[Download for Mac](https://github.com/vigneshkae/cute-cursor/releases/download/v0.3.3-beta.1/Cute-Cursor-macOS.dmg)** | **[Download for Windows](https://github.com/vigneshkae/cute-cursor/releases/download/windows-v0.3.3-beta.1/Cute-Cursor-Setup.exe)** |
+| Open the DMG → drag to Applications → launch | Open the installer → Install → launch |
+| Apple-signed and notarized | Unsigned beta; Windows may show a publisher warning |
 
-**[Download the Mac beta](https://github.com/vigneshkae/cute-cursor/releases/tag/v0.3.1-beta.1)** —
-version 0.3.1 (6), Developer ID signed and notarized by Apple. One universal DMG
-supports Apple Silicon and Intel Macs, targeting macOS 14 or newer. Open the DMG,
-drag Cute Cursor to Applications, and open it there. A ZIP and SHA-256 checksums
-are also included. See the compatibility notes below for hardware testing limits.
-The published Mac installer still uses **Little Swimmer** and **Cigarette**;
-their approved replacements, **Ancestor** and **No Smoking**, are in the source
-and Windows beta and will be included in the next Mac package.
+Version **0.3.3 beta**. Mac includes Apple Silicon and Intel code. The Windows
+installer automatically selects Intel/AMD or ARM, includes the runtime, and adds a
+Start menu shortcut and uninstaller. No GitHub account or developer tools needed.
+Both platforms include the approved **Ancestor** and **No Smoking** names; new
+cursors and default pack roles start at visual size **40**. The current font is retained.
 
-**[Download the Windows 0.3.2 beta](https://github.com/vigneshkae/cute-cursor/releases/tag/windows-v0.3.2-beta.1)** —
-includes the 20 named cursors, Soft Bloom pack, visual size 40 defaults, matching
-flower icon, and System Default action. The current app font is retained.
-Choose **x64** for Intel/AMD PCs or **ARM64** for Windows ARM devices. Extract the
-matching ZIP and run `CuteCursor.exe`; the runtime is included.
-Windows downloads are **unsigned testing builds** targeting Windows 11.
-The packaged x64 app passed automated native checks; live Apply/Restore and
-Windows ARM hardware testing remain. See the
-[Windows testing guide](https://github.com/vigneshkae/cute-cursor/blob/codex/windows/docs/TESTING_DOWNLOADS.md).
+See [download instructions and compatibility notes](DOWNLOAD.md),
+[Mac release notes](https://github.com/vigneshkae/cute-cursor/releases/tag/v0.3.3-beta.1),
+and [Windows release notes](https://github.com/vigneshkae/cute-cursor/releases/tag/windows-v0.3.3-beta.1).
+The [October 1 review](docs/LAUNCH_REVIEW.md) records the earlier beta audit and follow-up work.
 
 Closing the window keeps custom cursors active; Quit / ⌘Q / Exit restores your originals.
 
@@ -155,8 +144,9 @@ changing the system cursors. Coverage includes import validation, transparency,
 click-point geometry, persistence, portable packs, rollback, and preserving user
 edits when installing Soft Bloom.
 
-GitHub Actions runs the tests and verifies universal development packaging. It
-has no release-publishing step and uploads no installers.
+GitHub Actions runs the tests and verifies universal development packaging.
+Automatic checks do not publish releases. A separate manually invoked workflow
+can stage verified Windows packages into a draft beta for maintainer review.
 
 For the optional live system check, see [validation notes](docs/VALIDATION.md).
 That check briefly replaces the session's cursor roles, so run it only in an

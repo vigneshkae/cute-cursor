@@ -2,7 +2,7 @@
 
 ## Current release status
 
-0.3.1 (6), the Mac icon and reset fix, has passed Developer ID signing and Apple notarization.
+0.3.3 (7), the Mac collection naming update, has passed Developer ID signing and Apple notarization.
 Both the app and DMG carry validated tickets and pass Gatekeeper assessment.
 Development builds remain ad-hoc signed. Each new release build must pass signing
 and notarization again before being described as notarized.
@@ -30,8 +30,10 @@ The Windows 0.3.2 beta now includes the 20 named choices, visual size 40 default
 matching flower branding, and System Default restoration. Its x64 and ARM64 ZIPs
 remain unsigned test builds on `codex/windows`. The Mac app and DMG have passed
 signing, notarization, and ticket validation; previous betas remain as older releases.
-The approved Ancestor and No Smoking names still need a new Mac package: 0.3.1
-predates those changes. See the [launch review](LAUNCH_REVIEW.md).
+Mac 0.3.3 includes Ancestor and No Smoking and a one-time stock-name migration
+that preserves user edits and deletions. Windows 0.3.3 adds an installer that
+selects x64 or ARM64 automatically. See the [download page](../DOWNLOAD.md) and
+[launch review](LAUNCH_REVIEW.md).
 
 ## Before a stable release
 
@@ -100,8 +102,12 @@ Upload installers as **Release assets**, never as source files committed to Git.
 Create a draft release, attach the signed files, review notes and checksums, then
 publish the release. For beta testing, mark it as a prerelease.
 
-The CI workflow runs tests and verifies development packaging. It does not upload
-installers, publish releases, use signing credentials, or claim notarization.
+Automatic push checks run tests and verify development packaging. They do not
+publish releases, use signing credentials, or claim notarization. The separately
+invoked `stage-windows-beta.yml` workflow validates a successful Windows build
+(including x64 and ARM64 installer jobs), checks package hashes, and uploads only
+to a new draft prerelease. A maintainer must review and publish that draft. It
+never replaces existing release assets or promotes a beta to stable.
 
 Once a stable release exists, these patterns provide download buttons without
 hosting a website (replace OWNER and REPO with the published repository):
