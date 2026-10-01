@@ -34,6 +34,29 @@ enum BundledCollection {
 }
 
 extension CursorStore {
+    func migrateBundledNames() throws {
+        let receipt = directory.appendingPathComponent("bundled-collection.json")
+        var installed = try JSONDecoder().decode(Set<String>.self, from: Data(contentsOf: receipt))
+        let version = "cute-collection-names-v2"
+        guard !installed.contains(version) else { return }
+        // Only rename known stock entries that still have their previous name.
+        // Never recreate deleted entries or overwrite a user's custom name.
+        let replacements: [UUID: (old: String, new: String)] = [
+            UUID(uuidString: "E9C8EC9B-CAB9-4B4F-8FCE-D6B9847922DD")!: ("Little Swimmer", "Ancestor"),
+            UUID(uuidString: "B90F2269-998D-4A1B-A0C8-9D9BA2D6230A")!: ("Cigarette", "No Smoking")
+        ]
+        let previous = items
+        for index in items.indices {
+            if let replacement = replacements[items[index].id], items[index].name == replacement.old {
+                items[index].name = replacement.new
+            }
+        }
+        do { if items != previous { try persist() } }
+        catch { items = previous; throw error }
+        installed.insert(version)
+        try JSONEncoder().encode(installed).write(to: receipt, options: .atomic)
+    }
+
     func loadBundledCollection() throws {
         let receipt = directory.appendingPathComponent("bundled-collection.json")
         let version = "cute-collection-v1"

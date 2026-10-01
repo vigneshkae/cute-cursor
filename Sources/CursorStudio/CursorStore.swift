@@ -42,6 +42,7 @@ final class CursorStore: ObservableObject {
             }
             try loadPacks()
             try loadBundledCollection()
+            try migrateBundledNames()
             selectedID = items.first?.id
             selectedPackID = packs.first(where: { $0.id == SoftBloomArtwork.packID })?.id ?? packs.first?.id
         } catch {

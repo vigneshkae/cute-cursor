@@ -1,5 +1,13 @@
 # Changes
 
+## 0.3.3 (7) — Mac collection naming update
+
+- Package the approved **Ancestor** and **No Smoking** names.
+- Update unchanged stock names in existing libraries once, preserving custom
+  names, sizes, click points, favorites, and deleted cursors.
+- Keep the existing font, flower branding, and visual size 40 defaults.
+- Add two upgrade regression tests; 27 Swift tests now pass.
+
 ## Unreleased — decisions logged September 24, 2026
 
 - Approved cursor names: **Ancestor** (previously Little Swimmer) and

@@ -71,6 +71,45 @@ final class CollectionTests: XCTestCase {
     }
 
     @MainActor
+    func testApprovedNamesMigrateOnceAndPreserveCursorSettings() throws {
+        let root = try directory()
+        let original = CursorStore(directory: root)
+        var items = original.items
+        let ancestor = try XCTUnwrap(items.firstIndex { $0.name == "Ancestor" })
+        let noSmoking = try XCTUnwrap(items.firstIndex { $0.name == "No Smoking" })
+        items[ancestor].name = "Little Swimmer"
+        items[ancestor].size = 53; items[ancestor].hotspotX = 0.4; items[ancestor].isFavorite = true
+        items[noSmoking].name = "Cigarette"
+        try JSONEncoder().encode(items).write(to: root.appendingPathComponent("library.json"))
+        try JSONEncoder().encode(Set(["cute-collection-v1"])).write(to: root.appendingPathComponent("bundled-collection.json"))
+        let upgraded = CursorStore(directory: root)
+        XCTAssertNil(upgraded.error)
+        items[ancestor].name = "Ancestor"; items[noSmoking].name = "No Smoking"
+        XCTAssertEqual(upgraded.items, items)
+        upgraded.selectedID = items[ancestor].id
+        upgraded.update { $0.name = "Little Swimmer" }
+        XCTAssertEqual(CursorStore(directory: root).items, upgraded.items, "A later intentional rename must survive")
+    }
+
+    @MainActor
+    func testNameMigrationPreservesCustomNamesDeletionsAndUnrelatedEntries() throws {
+        let root = try directory()
+        let original = CursorStore(directory: root)
+        original.selectedID = try XCTUnwrap(original.items.first { $0.name == "Ancestor" }?.id)
+        original.update { $0.name = "My custom name" }
+        original.selectedID = try XCTUnwrap(original.items.first { $0.name == "No Smoking" }?.id)
+        original.deleteSelected()
+        let unrelatedID = UUID()
+        let unrelated = CursorItem(id: unrelatedID, name: "Cigarette", fileName: "\(unrelatedID).png")
+        original.items.append(unrelated)
+        try original.persist()
+        try JSONEncoder().encode(Set(["cute-collection-v1"])).write(to: root.appendingPathComponent("bundled-collection.json"))
+        let upgraded = CursorStore(directory: root)
+        XCTAssertNil(upgraded.error)
+        XCTAssertEqual(upgraded.items, original.items)
+    }
+
+    @MainActor
     func testUpgradeKeepsUnrelatedUserCursors() throws {
         let root = try directory()
         let id = UUID()
